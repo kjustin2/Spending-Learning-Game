@@ -99,6 +99,9 @@ const Charts = {
         const timeframes = Constants.TIME_PERIODS;
         const labels = timeframes.map(y => `${y} ${y === 1 ? 'Year' : 'Years'}`);
 
+        // Check if user chose the most frugal option
+        const isUserFrugal = impact.chosen.isCheapest;
+
         // Prepare data based on view
         const chosenData = timeframes.map(years => {
             const tf = impact.byTimeframe[years];
@@ -107,16 +110,31 @@ const Charts = {
                 : tf.chosenTotal.nominal;
         });
 
-        const cheapestData = timeframes.map(years => {
+        // If user chose frugal option, show most expensive for comparison
+        // Otherwise, show the cheapest option
+        const comparisonData = timeframes.map(years => {
             const tf = impact.byTimeframe[years];
             const chosenTotal = view === 'invested' 
                 ? tf.chosenTotal.invested 
                 : tf.chosenTotal.nominal;
-            const costDiff = view === 'invested'
-                ? tf.costVsCheapest.invested
-                : tf.costVsCheapest.nominal;
-            return chosenTotal - costDiff;
+            
+            if (isUserFrugal) {
+                // Show most expensive option (chosen + savings vs expensive)
+                const savingsDiff = view === 'invested'
+                    ? tf.savingsVsExpensive.invested
+                    : tf.savingsVsExpensive.nominal;
+                return chosenTotal + savingsDiff;
+            } else {
+                // Show cheapest option (chosen - cost vs cheapest)
+                const costDiff = view === 'invested'
+                    ? tf.costVsCheapest.invested
+                    : tf.costVsCheapest.nominal;
+                return chosenTotal - costDiff;
+            }
         });
+
+        // Determine which label to use for comparison
+        const comparisonLabel = isUserFrugal ? 'Most Expensive Option' : 'Most Frugal Option';
 
         this.instances[canvasId] = new Chart(ctx, {
             type: 'bar',
@@ -132,8 +150,8 @@ const Charts = {
                         borderRadius: 6
                     },
                     {
-                        label: 'Most Frugal Option',
-                        data: cheapestData,
+                        label: comparisonLabel,
+                        data: comparisonData,
                         backgroundColor: Constants.CHART_COLORS.SECONDARY,
                         borderColor: Constants.CHART_COLORS.SECONDARY,
                         borderWidth: 0,

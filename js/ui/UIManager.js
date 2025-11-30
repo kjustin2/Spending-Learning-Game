@@ -351,11 +351,20 @@ class UIManager {
         this.elements.chosenOption.textContent = impact.chosen.label;
         
         // Update comparison cards
+        // If user chose the most frugal option, show comparison with most expensive instead
+        const isUserFrugal = impact.chosen.isCheapest;
+        const comparisonOption = isUserFrugal ? impact.mostExpensive : impact.cheapest;
+        const alternativeCard = document.querySelector('.comparison-card.alternative h4');
+        if (alternativeCard) {
+            alternativeCard.textContent = isUserFrugal ? 'Most Expensive Option' : 'Most Frugal Option';
+        }
+        
         const frequencyText = Helpers.getFrequencyText(impact.chosen.frequency);
         this.elements.yourChoiceCost.textContent = Helpers.formatCurrency(impact.chosen.cost, true) + frequencyText;
-        this.elements.alternativeCost.textContent = Helpers.formatCurrency(impact.cheapest.cost, true) + frequencyText;
+        this.elements.alternativeCost.textContent = Helpers.formatCurrency(comparisonOption.cost, true) + frequencyText;
         
-        const annualDiff = impact.annualCostVsCheapest;
+        // Calculate the difference based on which comparison we're showing
+        const annualDiff = isUserFrugal ? impact.annualSavingsVsExpensive : impact.annualCostVsCheapest;
         const diffText = annualDiff === 0 ? 'Same!' : Helpers.formatCurrency(annualDiff) + '/year';
         this.elements.costDifference.textContent = diffText;
         
