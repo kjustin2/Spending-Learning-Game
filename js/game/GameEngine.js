@@ -98,8 +98,23 @@ class GameEngine {
             timestamp: Date.now()
         };
 
-        // Update state
-        this.state.decisions.push(decision);
+        // Check if there's already a decision for this scenario (user went back to change)
+        const existingIndex = this.state.decisions.findIndex(d => d.scenarioId === scenario.id);
+        
+        if (existingIndex !== -1) {
+            // Replace existing decision - need to reverse the old totals first
+            const oldDecision = this.state.decisions[existingIndex];
+            const oldThirtyYearImpact = oldDecision.impact.byTimeframe[30];
+            if (oldThirtyYearImpact) {
+                this.state.totalNominalSavings -= oldThirtyYearImpact.savingsVsExpensive.nominal;
+                this.state.totalInvestedSavings -= oldThirtyYearImpact.savingsVsExpensive.invested;
+            }
+            // Replace the old decision
+            this.state.decisions[existingIndex] = decision;
+        } else {
+            // Add new decision
+            this.state.decisions.push(decision);
+        }
         
         // Update cumulative totals (30-year impact vs cheapest option)
         const thirtyYearImpact = impact.byTimeframe[30];

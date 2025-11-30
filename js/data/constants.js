@@ -4,12 +4,21 @@
 const Constants = {
     // Investment and growth rates
     RATES: {
-        STOCK_MARKET_RETURN: 0.07,      // 7% average annual return
-        SAVINGS_ACCOUNT: 0.04,           // 4% savings account interest
-        INFLATION: 0.03,                 // 3% annual inflation
-        HOME_APPRECIATION: 0.035,        // 3.5% annual home appreciation
-        CAR_DEPRECIATION: 0.15,          // 15% annual car depreciation
-        MORTGAGE_RATE: 0.065             // 6.5% mortgage rate
+        STOCK_MARKET_RETURN: 0.07,      // 7% average annual return (S&P 500 historical)
+        INDEX_FUND_RETURN: 0.07,        // 7% index fund average return
+        INDIVIDUAL_STOCKS: 0.10,        // 10% potential but higher risk
+        TREASURY_BONDS: 0.045,          // 4.5% treasury bond yield
+        HIGH_YIELD_SAVINGS: 0.045,      // 4.5% high-yield savings
+        REGULAR_SAVINGS: 0.005,         // 0.5% regular savings account
+        CHECKING_ACCOUNT: 0.001,        // 0.1% checking account (essentially 0)
+        REAL_ESTATE_RETURN: 0.08,       // 8% real estate investment return
+        SAVINGS_ACCOUNT: 0.04,          // 4% savings account interest (legacy)
+        INFLATION: 0.03,                // 3% annual inflation
+        HOME_APPRECIATION: 0.035,       // 3.5% annual home appreciation
+        CAR_DEPRECIATION: 0.15,         // 15% annual car depreciation
+        MORTGAGE_RATE: 0.065,           // 6.5% mortgage rate
+        CREDIT_CARD_APR: 0.22,          // 22% average credit card APR
+        CREDIT_CARD_REWARDS: 0.02       // 2% average rewards rate
     },
 
     // Time periods for calculations
@@ -46,6 +55,24 @@ const Constants = {
             label: 'Lifestyle',
             color: '#d53f8c',
             icon: '✨'
+        },
+        INVESTING: {
+            id: 'investing',
+            label: 'Investing',
+            color: '#2f855a',
+            icon: '📈'
+        },
+        CREDIT: {
+            id: 'credit',
+            label: 'Credit & Debt',
+            color: '#c53030',
+            icon: '💳'
+        },
+        CAREER: {
+            id: 'career',
+            label: 'Career',
+            color: '#2b6cb0',
+            icon: '💼'
         }
     },
 
@@ -69,7 +96,14 @@ const Constants = {
         SMALL_CHANGES: "Small daily changes have massive long-term effects. Saving just $5/day becomes over $54,000 in 20 years if invested!",
         LIFESTYLE_CREEP: "As income grows, spending often grows with it. Being mindful of 'lifestyle creep' can accelerate wealth building.",
         HOUSING_WEALTH: "For many people, their home is their largest asset. But remember: the house you live in is also an expense.",
-        SUBSCRIPTION_TRAP: "Small monthly subscriptions add up. $50/month in subscriptions = $600/year = $18,000 over 30 years (without investment growth)."
+        SUBSCRIPTION_TRAP: "Small monthly subscriptions add up. $50/month in subscriptions = $600/year = $18,000 over 30 years (without investment growth).",
+        INDEX_FUNDS: "Index funds offer instant diversification and historically match market returns with very low fees (often 0.03-0.20%).",
+        TREASURY_BONDS: "Treasury bonds are backed by the US government—considered the safest investment. Lower returns but virtually no risk of loss.",
+        CREDIT_CARD_DEBT: "At 22% APR, a $5,000 credit card balance costs $1,100/year in interest. That's money that could be growing in investments instead!",
+        EMERGENCY_FUND: "Financial experts recommend 3-6 months of expenses in easily accessible savings before investing aggressively.",
+        CAREER_GROWTH: "Your earning potential is your biggest asset. A 10% raise early in your career can mean hundreds of thousands more over your lifetime.",
+        DIVERSIFICATION: "Don't put all your eggs in one basket. Diversifying across asset types reduces risk while maintaining growth potential.",
+        TIME_IN_MARKET: "Time in the market beats timing the market. Starting to invest 10 years earlier can double your retirement savings."
     },
 
     // Wisdom score thresholds

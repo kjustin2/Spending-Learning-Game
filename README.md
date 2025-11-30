@@ -47,6 +47,22 @@ Simply open `index.html` in your browser, or visit the GitHub Pages deployment.
 - **Subscriptions**: Full stack vs curated
 - **Phone Upgrades**: Latest vs extended use
 
+### 📈 Investing
+- **Investment Strategy**: Index funds vs stocks vs savings vs checking
+- **Risk Tolerance**: Stocks vs bonds vs balanced portfolios
+- **Real Estate**: Rental property vs REITs vs stock index
+- **Emergency Fund**: Safety vs growth trade-offs
+
+### 💳 Credit & Debt
+- **Credit Card Strategy**: Pay in full vs carry balance vs debit only
+- **Debt vs Investing**: Pay off debt or invest?
+- **Building Credit**: Strategies for credit score improvement
+
+### 🎯 Career
+- **Job Hopping vs Loyalty**: When to change jobs for higher pay
+- **Career Investment**: Certifications vs degrees vs self-study
+- **401(k) Match**: Maximizing employer contributions
+
 ## 🧮 Financial Calculations
 
 The game uses real financial formulas:
@@ -111,8 +127,11 @@ spending-learning-game/
 ## 🎯 Features
 
 ### MVP (Current)
-- ✅ 8 realistic spending scenarios
-- ✅ Interactive choice system
+- ✅ 19 realistic spending scenarios across 7 categories
+- ✅ Investment decision scenarios (index funds, bonds, HYSA, real estate)
+- ✅ Credit card and debt management scenarios
+- ✅ Career and income scenarios (job changes, 401k match)
+- ✅ Interactive choice system with quality ratings
 - ✅ 30-year financial projections
 - ✅ Visual charts comparing choices
 - ✅ Educational tips for each scenario
@@ -121,20 +140,26 @@ spending-learning-game/
 - ✅ Mobile-responsive design
 
 ### Planned Features
-- [ ] More scenario categories
-- [ ] Achievement badges
+- [ ] Achievement badges system
 - [ ] Custom scenario builder
 - [ ] Regional cost adjustments
 - [ ] Social sharing
 - [ ] Life simulation mode
+- [ ] Leaderboards
 
 ## 📈 Financial Assumptions
 
 | Parameter | Value | Source |
 |-----------|-------|--------|
 | Stock Market Return | 7% | Historical S&P 500 average |
+| Index Fund Return | 7% | Low-cost passive investing |
+| Treasury Bonds | 4.5% | Current US Treasury rates |
+| High-Yield Savings | 4.5% | Current competitive rates |
+| Regular Savings | 0.5% | Traditional bank rates |
+| Checking Account | 0.1% | Near-zero interest |
+| Real Estate Return | 8% | Includes rental income |
+| Credit Card APR | 22% | Average credit card rate |
 | Inflation Rate | 3% | US historical average |
-| Savings Account | 4% | Current high-yield rates |
 | Home Appreciation | 3.5% | US housing market average |
 | Car Depreciation | 15% | Industry standard |
 

@@ -164,7 +164,7 @@ Scenario = {
    - Choice buttons with immediate cost shown
    - "Calculate Impact" button
 
-3. **Scenario Categories (MVP - 5-8 scenarios)**
+3. **Scenario Categories (MVP - 19 scenarios)**
 
    **Daily Spending:**
    - Pasta example: $5/day vs $1/day dinner
@@ -178,6 +178,26 @@ Scenario = {
    **Housing:**
    - Rent vs Buy decision
    - Apartment size (studio vs 1BR vs 2BR)
+
+   **Lifestyle:**
+   - Subscription services (full stack vs curated)
+   - Phone upgrades (latest vs extended use)
+
+   **Investing:**
+   - Investment strategy (index funds vs stocks vs HYSA vs checking)
+   - Risk tolerance (stocks vs bonds vs balanced)
+   - Real estate investing (rental vs REIT vs stocks)
+   - Emergency fund priority
+
+   **Credit & Debt:**
+   - Credit card strategy (pay full vs carry balance vs debit)
+   - Debt payoff vs investing
+   - Building credit history
+
+   **Career:**
+   - Job hopping vs loyalty
+   - Career investment (certifications vs degrees)
+   - 401(k) employer match decisions
 
 4. **Results Visualization**
    - Bar chart comparing choices over 1, 5, 10, 20, 30 years
@@ -295,7 +315,10 @@ This scenario has a "Customize" button to adjust values
 ## 🚀 Future Features (Post-MVP)
 
 ### Version 1.1 - Enhanced Scenarios
-- [ ] Subscription services (streaming, gym, apps)
+- [x] Subscription services (streaming, gym, apps) ✅ Implemented
+- [x] Investment strategy scenarios (index funds, bonds, HYSA) ✅ Implemented
+- [x] Credit card and debt management ✅ Implemented
+- [x] Career and income scenarios ✅ Implemented
 - [ ] Insurance choices (high vs low deductible)
 - [ ] Education (college vs trade school vs self-taught)
 - [ ] Side hustle / income boosting scenarios

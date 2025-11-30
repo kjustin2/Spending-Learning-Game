@@ -347,6 +347,132 @@ const Calculator = {
         });
         
         return Math.round((totalQualityWeightedSavings / maxPossibleScore) * 100);
+    },
+
+    /**
+     * Compare different investment options over time
+     * @param {number} principal - Initial investment amount
+     * @param {number} monthlyContribution - Monthly additional investment
+     * @param {Array} rates - Array of {name, rate} objects to compare
+     * @param {number} years - Investment period
+     * @returns {Object} Comparison of investment outcomes
+     */
+    compareInvestments(principal, monthlyContribution, rates, years) {
+        const results = {};
+        
+        rates.forEach(({ name, rate }) => {
+            const futureValuePrincipal = this.futureValue(principal, rate, years);
+            const futureValueContributions = this.futureValueAnnuity(
+                monthlyContribution,
+                rate / 12,
+                years * 12
+            );
+            const totalContributed = principal + (monthlyContribution * years * 12);
+            const totalValue = futureValuePrincipal + futureValueContributions;
+            const totalGain = totalValue - totalContributed;
+            
+            results[name] = {
+                rate,
+                totalContributed,
+                futureValue: totalValue,
+                totalGain,
+                effectiveReturn: totalContributed > 0 ? (totalValue / totalContributed - 1) : 0
+            };
+        });
+        
+        return results;
+    },
+
+    /**
+     * Calculate credit card interest cost
+     * @param {number} balance - Average balance carried
+     * @param {number} apr - Annual percentage rate
+     * @param {number} years - Years carrying balance
+     * @returns {Object} Interest cost breakdown
+     */
+    creditCardInterestCost(balance, apr, years) {
+        const monthlyRate = apr / 12;
+        const monthlyInterest = balance * monthlyRate;
+        const annualInterest = monthlyInterest * 12;
+        const totalInterest = annualInterest * years;
+        
+        return {
+            monthlyInterest,
+            annualInterest,
+            totalInterest,
+            equivalentInvestmentLoss: this.opportunityCost(annualInterest, years)
+        };
+    },
+
+    /**
+     * Calculate 401k employer match value over time
+     * @param {number} salary - Annual salary
+     * @param {number} contributionPercent - Employee contribution percentage
+     * @param {number} matchPercent - Employer match percentage (e.g., 0.5 for 50% match)
+     * @param {number} matchLimit - Employer match limit as percent of salary
+     * @param {number} years - Years of contributions
+     * @returns {Object} 401k value breakdown
+     */
+    calculate401kMatch(salary, contributionPercent, matchPercent, matchLimit, years) {
+        const employeeAnnual = salary * contributionPercent;
+        const matchableAmount = Math.min(employeeAnnual, salary * matchLimit);
+        const employerAnnual = matchableAmount * matchPercent;
+        const totalAnnual = employeeAnnual + employerAnnual;
+        
+        const futureValue = this.futureValueAnnuity(
+            totalAnnual / 12,
+            Constants.RATES.INDEX_FUND_RETURN / 12,
+            years * 12
+        );
+        
+        const withoutMatch = this.futureValueAnnuity(
+            employeeAnnual / 12,
+            Constants.RATES.INDEX_FUND_RETURN / 12,
+            years * 12
+        );
+        
+        return {
+            employeeAnnual,
+            employerAnnual,
+            totalAnnual,
+            futureValue,
+            employerMatchValue: futureValue - withoutMatch,
+            totalContributed: totalAnnual * years,
+            totalGrowth: futureValue - (totalAnnual * years)
+        };
+    },
+
+    /**
+     * Calculate salary difference impact over career
+     * @param {number} salary1 - First salary option
+     * @param {number} salary2 - Second salary option
+     * @param {number} years - Career years
+     * @param {number} raiseRate - Annual raise percentage
+     * @returns {Object} Career earnings comparison
+     */
+    compareSalaries(salary1, salary2, years, raiseRate = 0.03) {
+        let total1 = 0;
+        let total2 = 0;
+        let current1 = salary1;
+        let current2 = salary2;
+        
+        for (let i = 0; i < years; i++) {
+            total1 += current1;
+            total2 += current2;
+            current1 *= (1 + raiseRate);
+            current2 *= (1 + raiseRate);
+        }
+        
+        const difference = total1 - total2;
+        const invested = this.opportunityCost(Math.abs(salary1 - salary2), years);
+        
+        return {
+            salary1Total: total1,
+            salary2Total: total2,
+            lifetimeDifference: Math.abs(difference),
+            higherSalary: salary1 > salary2 ? salary1 : salary2,
+            investedDifference: invested
+        };
     }
 };
 

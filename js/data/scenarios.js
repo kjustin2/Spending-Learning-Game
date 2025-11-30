@@ -344,6 +344,422 @@ const ScenariosData = [
         ],
         tip: "Flagship phones depreciate about 40% in the first year. A 1-year-old flagship often costs 50-60% of new price but works nearly identically. Consider the 'sweet spot' of buying last year's model!",
         educationalFocus: 'depreciation'
+    },
+
+    // ===== INVESTING =====
+    {
+        id: 'investment-strategy',
+        category: 'investing',
+        title: 'Where to Put Your Money',
+        description: "You have $500/month to invest for the long term. Where you put it makes a huge difference over decades. Each option has different risk/reward profiles.",
+        choices: [
+            {
+                id: 'index-funds',
+                label: 'S&P 500 Index Fund',
+                detail: 'Low-cost, diversified, tracks the market (~7% avg return)',
+                cost: -500,
+                frequency: 'monthly',
+                qualityScore: 90,
+                satisfactionNote: 'Set it and forget it, historically proven',
+                returnRate: 0.07
+            },
+            {
+                id: 'individual-stocks',
+                label: 'Individual Stock Picking',
+                detail: 'Research and pick your own stocks (highly variable returns)',
+                cost: -500,
+                frequency: 'monthly',
+                qualityScore: 70,
+                satisfactionNote: 'Exciting but risky, most underperform index funds',
+                returnRate: 0.05 // Most stock pickers underperform
+            },
+            {
+                id: 'high-yield-savings',
+                label: 'High-Yield Savings Account',
+                detail: 'Safe, FDIC insured, ~4.5% APY currently',
+                cost: -500,
+                frequency: 'monthly',
+                qualityScore: 75,
+                satisfactionNote: 'Safe and liquid, but lower long-term growth',
+                returnRate: 0.045
+            },
+            {
+                id: 'checking-account',
+                label: 'Leave in Checking Account',
+                detail: 'Easy access, basically 0% return',
+                cost: -500,
+                frequency: 'monthly',
+                qualityScore: 30,
+                satisfactionNote: 'Losing money to inflation every year',
+                returnRate: 0.001
+            }
+        ],
+        tip: "Over 30 years, $500/month in an index fund (~7%) grows to ~$566,000. In a checking account (0.1%), it's only ~$182,000. That's a $384,000 difference from the same monthly contribution!",
+        educationalFocus: 'index_funds'
+    },
+    {
+        id: 'treasury-vs-stocks',
+        category: 'investing',
+        title: 'Risk Tolerance',
+        description: "You have $10,000 to invest. Do you prioritize safety or growth? This fundamental question shapes your entire investment strategy.",
+        choices: [
+            {
+                id: 'all-stocks',
+                label: '100% Stock Market (Index Funds)',
+                detail: 'Maximum growth potential, higher volatility',
+                cost: -10000,
+                frequency: 'once',
+                qualityScore: 80,
+                satisfactionNote: 'Best for long time horizons, can drop 30%+ in bad years',
+                returnRate: 0.07
+            },
+            {
+                id: 'balanced-portfolio',
+                label: '60% Stocks / 40% Bonds',
+                detail: 'Classic balanced portfolio, moderate risk',
+                cost: -10000,
+                frequency: 'once',
+                qualityScore: 85,
+                satisfactionNote: 'Smoother ride, still solid growth',
+                returnRate: 0.055
+            },
+            {
+                id: 'treasury-bonds',
+                label: '100% Treasury Bonds',
+                detail: 'Government backed, very safe, predictable returns',
+                cost: -10000,
+                frequency: 'once',
+                qualityScore: 70,
+                satisfactionNote: 'Sleep well at night, but inflation may outpace you',
+                returnRate: 0.045
+            }
+        ],
+        tip: "A 25-year-old with 40 years until retirement can afford more risk—they have time to recover from market dips. Someone 5 years from retirement needs more stability. Adjust your allocation as you age!",
+        educationalFocus: 'diversification'
+    },
+    {
+        id: 'real-estate-investment',
+        category: 'investing',
+        title: 'Real Estate Investing',
+        description: "Beyond your primary home, real estate can be an investment. But it requires more capital and effort than stocks. How would you approach it?",
+        choices: [
+            {
+                id: 'rental-property',
+                label: 'Buy a Rental Property',
+                detail: '$60,000 down payment, manage tenants, ~8% return',
+                cost: 60000,
+                frequency: 'once',
+                qualityScore: 75,
+                satisfactionNote: 'Tangible asset, rental income, but lots of work',
+                returnRate: 0.08
+            },
+            {
+                id: 'reit-funds',
+                label: 'Real Estate Investment Trust (REIT)',
+                detail: 'Buy shares in real estate portfolio, ~6% dividend + growth',
+                cost: 10000,
+                frequency: 'once',
+                qualityScore: 85,
+                satisfactionNote: 'Real estate exposure without being a landlord',
+                returnRate: 0.07
+            },
+            {
+                id: 'stick-with-stocks',
+                label: 'Skip Real Estate, More Index Funds',
+                detail: 'Keep it simple, put money in diversified stock index',
+                cost: 10000,
+                frequency: 'once',
+                qualityScore: 80,
+                satisfactionNote: 'Simpler, more liquid, historically similar returns',
+                returnRate: 0.07
+            }
+        ],
+        tip: "Direct real estate investing averages 8-10% returns but requires significant capital, time, and expertise. REITs offer real estate exposure with stock-like liquidity. Both can diversify a portfolio beyond pure stocks.",
+        educationalFocus: 'real_estate'
+    },
+    {
+        id: 'emergency-fund',
+        category: 'investing',
+        title: 'Emergency Fund Priority',
+        description: "You have $15,000 saved but no emergency fund. Financial advisors recommend 3-6 months of expenses (~$15,000 for you) before aggressive investing. What do you do?",
+        choices: [
+            {
+                id: 'full-emergency',
+                label: 'Keep Full Emergency Fund',
+                detail: 'All $15,000 in high-yield savings (4.5%), invest future savings',
+                cost: -15000,
+                frequency: 'once',
+                qualityScore: 95,
+                satisfactionNote: 'Peace of mind, protected from unexpected expenses',
+                returnRate: 0.045
+            },
+            {
+                id: 'split-approach',
+                label: 'Split: $10K Emergency, $5K Invest',
+                detail: 'Partial safety net, start building investment portfolio',
+                cost: -15000,
+                frequency: 'once',
+                qualityScore: 75,
+                satisfactionNote: 'Balanced approach, some risk exposure',
+                returnRate: 0.058
+            },
+            {
+                id: 'invest-all',
+                label: 'Invest Everything in Index Funds',
+                detail: 'Maximum growth potential, but vulnerable to emergencies',
+                cost: -15000,
+                frequency: 'once',
+                qualityScore: 50,
+                satisfactionNote: 'Higher returns but may need to sell at bad time',
+                returnRate: 0.07
+            }
+        ],
+        tip: "Without an emergency fund, an unexpected $5,000 expense could force you to sell investments at a loss or take on high-interest debt. The 'opportunity cost' of a safe emergency fund is worth the peace of mind!",
+        educationalFocus: 'emergency_fund'
+    },
+
+    // ===== CREDIT & DEBT =====
+    {
+        id: 'credit-card-usage',
+        category: 'credit',
+        title: 'Credit Card Strategy',
+        description: "Credit cards can be powerful tools or dangerous traps. How do you use them? This choice has major implications for your financial health.",
+        choices: [
+            {
+                id: 'pay-full-rewards',
+                label: 'Pay in Full, Maximize Rewards',
+                detail: 'Use for all purchases, pay full balance monthly, earn 2% back',
+                cost: -200,
+                frequency: 'monthly',
+                qualityScore: 95,
+                satisfactionNote: 'Free money from rewards, build credit score',
+                returnRate: 0.02
+            },
+            {
+                id: 'debit-only',
+                label: 'Debit Card Only',
+                detail: 'Avoid credit entirely, spend only what you have',
+                cost: 0,
+                frequency: 'monthly',
+                qualityScore: 70,
+                satisfactionNote: 'No debt risk, but miss rewards and credit building',
+                returnRate: 0
+            },
+            {
+                id: 'carry-balance',
+                label: 'Carry a Balance Sometimes',
+                detail: 'Pay minimum when tight, average $2,000 balance at 22% APR',
+                cost: 440,
+                frequency: 'yearly',
+                qualityScore: 30,
+                satisfactionNote: 'Flexibility but expensive—interest adds up fast',
+                returnRate: -0.22
+            }
+        ],
+        tip: "Using credit cards responsibly (paying in full) is actually profitable—2% rewards on $3,000/month spending = $720/year FREE. But carrying a $2,000 balance costs $440/year in interest. The difference is $1,160/year!",
+        educationalFocus: 'credit_card_debt'
+    },
+    {
+        id: 'debt-payoff',
+        category: 'credit',
+        title: 'Debt Payoff vs Investing',
+        description: "You have $5,000 in credit card debt at 22% APR and $500/month extra. Should you pay off debt or invest? This is a common financial crossroads.",
+        choices: [
+            {
+                id: 'payoff-debt-first',
+                label: 'Pay Off Debt First',
+                detail: 'Attack the 22% APR debt aggressively, then invest',
+                cost: 500,
+                frequency: 'monthly',
+                qualityScore: 95,
+                satisfactionNote: 'Guaranteed 22% return by eliminating interest',
+                returnRate: 0.22
+            },
+            {
+                id: 'split-debt-invest',
+                label: 'Split: $300 Debt, $200 Invest',
+                detail: 'Balance debt payoff with starting investment habit',
+                cost: 500,
+                frequency: 'monthly',
+                qualityScore: 60,
+                satisfactionNote: 'Psychological win but mathematically worse',
+                returnRate: 0.12
+            },
+            {
+                id: 'minimum-invest',
+                label: 'Pay Minimum, Invest the Rest',
+                detail: 'Bet on 7% investment returns beating debt payoff',
+                cost: 500,
+                frequency: 'monthly',
+                qualityScore: 25,
+                satisfactionNote: 'Losing money—22% cost vs 7% gain',
+                returnRate: -0.15
+            }
+        ],
+        tip: "Paying off 22% APR debt is like getting a guaranteed 22% return on your money—better than any investment! Always pay off high-interest debt before investing. The math is clear: 22% > 7%.",
+        educationalFocus: 'credit_card_debt'
+    },
+    {
+        id: 'credit-score-building',
+        category: 'credit',
+        title: 'Building Credit History',
+        description: "You're young with limited credit history. A good credit score saves thousands on loans and insurance. How do you build it?",
+        choices: [
+            {
+                id: 'secured-card-responsible',
+                label: 'Secured Card, Small Purchases, Pay Full',
+                detail: 'Start with $500 secured card, buy gas, pay in full',
+                cost: 0,
+                frequency: 'monthly',
+                qualityScore: 95,
+                satisfactionNote: 'Slow and steady builds excellent credit',
+                returnRate: 0
+            },
+            {
+                id: 'authorized-user',
+                label: 'Become Authorized User',
+                detail: 'Get added to parent/partner card with good history',
+                cost: 0,
+                frequency: 'monthly',
+                qualityScore: 85,
+                satisfactionNote: 'Instant credit history boost, relies on others',
+                returnRate: 0
+            },
+            {
+                id: 'no-credit',
+                label: 'Avoid Credit Entirely',
+                detail: 'Cash and debit only, build wealth first',
+                cost: 0,
+                frequency: 'monthly',
+                qualityScore: 40,
+                satisfactionNote: 'Miss out on credit benefits, harder to get loans later',
+                returnRate: 0
+            }
+        ],
+        tip: "A 750+ credit score vs 650 can save you $50,000+ over a lifetime on mortgages, auto loans, and insurance. Building credit early with responsible use is one of the best financial moves for young adults.",
+        educationalFocus: 'credit_building'
+    },
+
+    // ===== CAREER =====
+    {
+        id: 'job-hopping',
+        category: 'career',
+        title: 'Job Loyalty vs Job Hopping',
+        description: "You've been at your job 2 years earning $55,000. You have an offer for $68,000 elsewhere. Staying might lead to a $3,000 raise. What do you do?",
+        choices: [
+            {
+                id: 'take-new-job',
+                label: 'Take the New Job',
+                detail: '$68,000/year, new challenges, fresh start',
+                cost: -68000,
+                frequency: 'yearly',
+                qualityScore: 85,
+                satisfactionNote: '24% raise, accelerate career growth',
+                returnRate: 0
+            },
+            {
+                id: 'negotiate-stay',
+                label: 'Use Offer to Negotiate',
+                detail: 'Ask current employer to match, might get $62,000',
+                cost: -62000,
+                frequency: 'yearly',
+                qualityScore: 75,
+                satisfactionNote: 'Keep relationships, decent raise, some risk',
+                returnRate: 0
+            },
+            {
+                id: 'stay-loyal',
+                label: 'Stay Loyal, Wait for Raise',
+                detail: 'Likely $58,000 next year, known environment',
+                cost: -58000,
+                frequency: 'yearly',
+                qualityScore: 50,
+                satisfactionNote: 'Comfortable but leaving money on the table',
+                returnRate: 0
+            }
+        ],
+        tip: "Workers who change jobs earn 10-20% more than those who stay. Over 30 years, the $13,000/year difference between $68K and $55K compounds to over $600,000 in additional lifetime earnings!",
+        educationalFocus: 'career_growth'
+    },
+    {
+        id: 'career-investment',
+        category: 'career',
+        title: 'Investing in Your Career',
+        description: "You could increase your earning potential with additional education or certifications. But they cost time and money upfront. What's your approach?",
+        choices: [
+            {
+                id: 'professional-cert',
+                label: 'Get Professional Certification',
+                detail: '$3,000 and 6 months study, ~15% salary increase potential',
+                cost: 3000,
+                frequency: 'once',
+                qualityScore: 90,
+                satisfactionNote: 'High ROI, targeted skill boost',
+                returnRate: 0.15
+            },
+            {
+                id: 'masters-degree',
+                label: 'Pursue Master\'s Degree (Part-time)',
+                detail: '$40,000 over 3 years, 20-30% long-term salary boost',
+                cost: 40000,
+                frequency: 'once',
+                qualityScore: 75,
+                satisfactionNote: 'Major commitment, significant career pivot potential',
+                returnRate: 0.25
+            },
+            {
+                id: 'self-learning',
+                label: 'Self-Study & Free Resources',
+                detail: 'Online courses, books, networking—$500/year',
+                cost: 500,
+                frequency: 'yearly',
+                qualityScore: 70,
+                satisfactionNote: 'Low cost but requires discipline, slower progress',
+                returnRate: 0.05
+            }
+        ],
+        tip: "A $3,000 certification that leads to a 15% raise ($8,250/year on a $55K salary) pays for itself in 4 months! Education ROI often beats investment returns—your earning potential is your biggest asset.",
+        educationalFocus: 'career_growth'
+    },
+    {
+        id: 'retirement-contribution',
+        category: 'career',
+        title: '401(k) Match Decision',
+        description: "Your employer offers 401(k) matching: they match 50% of your contribution up to 6% of salary. Your salary is $60,000. How much do you contribute?",
+        choices: [
+            {
+                id: 'full-match',
+                label: 'Contribute 6% (Get Full Match)',
+                detail: '$3,600/year from you + $1,800 free from employer',
+                cost: 3600,
+                frequency: 'yearly',
+                qualityScore: 95,
+                satisfactionNote: '50% instant return on your money—can\'t beat it',
+                returnRate: 0.50
+            },
+            {
+                id: 'max-contribution',
+                label: 'Max Out 401(k) (23%)',
+                detail: '$13,800/year contribution, get match plus tax benefits',
+                cost: 13800,
+                frequency: 'yearly',
+                qualityScore: 85,
+                satisfactionNote: 'Aggressive retirement saving, less take-home pay',
+                returnRate: 0.07
+            },
+            {
+                id: 'skip-401k',
+                label: 'Skip 401(k), Need Cash Now',
+                detail: 'Keep all salary, miss employer match',
+                cost: 0,
+                frequency: 'yearly',
+                qualityScore: 20,
+                satisfactionNote: 'Leaving free money on the table',
+                returnRate: 0
+            }
+        ],
+        tip: "Not taking the full employer match is literally refusing free money! That $1,800/year 'free' contribution, invested for 30 years at 7%, becomes ~$170,000. Would you say no to $170,000?",
+        educationalFocus: 'compound_interest'
     }
 ];
 
