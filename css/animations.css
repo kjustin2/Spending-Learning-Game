@@ -1,0 +1,334 @@
+/* ===== Keyframes ===== */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes shake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    10%, 30%, 50%, 70%, 90% {
+        transform: translateX(-5px);
+    }
+    20%, 40%, 60%, 80% {
+        transform: translateX(5px);
+    }
+}
+
+@keyframes countUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes glow {
+    0%, 100% {
+        box-shadow: 0 0 5px rgba(56, 161, 105, 0.5);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(56, 161, 105, 0.8);
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ===== Animation Classes ===== */
+.animate-fade-in {
+    animation: fadeIn 0.3s ease forwards;
+}
+
+.animate-fade-in-up {
+    animation: fadeInUp 0.4s ease forwards;
+}
+
+.animate-fade-in-down {
+    animation: fadeInDown 0.4s ease forwards;
+}
+
+.animate-fade-out {
+    animation: fadeOut 0.3s ease forwards;
+}
+
+.animate-slide-in-right {
+    animation: slideInRight 0.4s ease forwards;
+}
+
+.animate-slide-in-left {
+    animation: slideInLeft 0.4s ease forwards;
+}
+
+.animate-bounce {
+    animation: bounce 1s ease;
+}
+
+.animate-pulse {
+    animation: pulse 0.5s ease;
+}
+
+.animate-shake {
+    animation: shake 0.5s ease;
+}
+
+.animate-glow {
+    animation: glow 2s infinite;
+}
+
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+/* ===== Transition Utilities ===== */
+.transition-all {
+    transition: all var(--transition-base);
+}
+
+.transition-fast {
+    transition: all var(--transition-fast);
+}
+
+.transition-slow {
+    transition: all var(--transition-slow);
+}
+
+/* ===== Screen Transitions ===== */
+.screen {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.screen.active {
+    opacity: 1;
+}
+
+.screen.transitioning-out {
+    animation: fadeOut 0.3s ease forwards;
+}
+
+.screen.transitioning-in {
+    animation: fadeIn 0.3s ease forwards;
+}
+
+/* ===== Staggered Animations ===== */
+.stagger-item {
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.stagger-item.animate {
+    animation: fadeInUp 0.4s ease forwards;
+}
+
+.stagger-item:nth-child(1) { animation-delay: 0.05s; }
+.stagger-item:nth-child(2) { animation-delay: 0.1s; }
+.stagger-item:nth-child(3) { animation-delay: 0.15s; }
+.stagger-item:nth-child(4) { animation-delay: 0.2s; }
+.stagger-item:nth-child(5) { animation-delay: 0.25s; }
+.stagger-item:nth-child(6) { animation-delay: 0.3s; }
+.stagger-item:nth-child(7) { animation-delay: 0.35s; }
+.stagger-item:nth-child(8) { animation-delay: 0.4s; }
+
+/* ===== Number Counter Animation ===== */
+.counter-animate {
+    display: inline-block;
+    animation: countUp 0.3s ease;
+}
+
+/* ===== Choice Button Animations ===== */
+.choice-btn {
+    transition: all var(--transition-base);
+}
+
+.choice-btn:active {
+    transform: scale(0.98);
+}
+
+.choice-btn.selected {
+    animation: pulse 0.3s ease;
+}
+
+/* ===== Chart Animations ===== */
+.chart-container canvas {
+    animation: fadeIn 0.5s ease;
+}
+
+/* ===== Card Entrance ===== */
+.scenario-card {
+    animation: fadeInUp 0.5s ease;
+}
+
+.results-container > * {
+    animation: fadeInUp 0.4s ease backwards;
+}
+
+.results-container > *:nth-child(1) { animation-delay: 0s; }
+.results-container > *:nth-child(2) { animation-delay: 0.05s; }
+.results-container > *:nth-child(3) { animation-delay: 0.1s; }
+.results-container > *:nth-child(4) { animation-delay: 0.15s; }
+.results-container > *:nth-child(5) { animation-delay: 0.2s; }
+.results-container > *:nth-child(6) { animation-delay: 0.25s; }
+
+/* ===== Summary Animations ===== */
+.summary-container > * {
+    animation: fadeInUp 0.4s ease backwards;
+}
+
+.summary-container > *:nth-child(1) { animation-delay: 0s; }
+.summary-container > *:nth-child(2) { animation-delay: 0.1s; }
+.summary-container > *:nth-child(3) { animation-delay: 0.2s; }
+.summary-container > *:nth-child(4) { animation-delay: 0.3s; }
+.summary-container > *:nth-child(5) { animation-delay: 0.4s; }
+.summary-container > *:nth-child(6) { animation-delay: 0.5s; }
+.summary-container > *:nth-child(7) { animation-delay: 0.6s; }
+
+/* ===== Hover Effects ===== */
+.hover-lift {
+    transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+
+.hover-scale {
+    transition: transform var(--transition-fast);
+}
+
+.hover-scale:hover {
+    transform: scale(1.02);
+}
+
+/* ===== Loading States ===== */
+.loading {
+    position: relative;
+    pointer-events: none;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid var(--color-border);
+    border-top-color: var(--color-primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+/* ===== Success/Error States ===== */
+.success-flash {
+    animation: glow 0.5s ease;
+    box-shadow: 0 0 20px rgba(56, 161, 105, 0.5);
+}
+
+.error-flash {
+    animation: shake 0.5s ease;
+}
+
+/* ===== Reduced Motion ===== */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

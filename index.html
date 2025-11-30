@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Money Choices - Spending Habits Simulator</title>
+    <meta name="description" content="Learn how your daily spending decisions compound over time with this interactive financial literacy game.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+    <!-- Welcome Screen -->
+    <div id="welcome-screen" class="screen active">
+        <div class="welcome-container">
+            <div class="logo">
+                <span class="logo-icon">💰</span>
+                <h1>Money Choices</h1>
+            </div>
+            <p class="tagline">Discover how small decisions create big differences</p>
+            
+            <div class="welcome-features">
+                <div class="feature">
+                    <span class="feature-icon">📊</span>
+                    <span>See real impact over 30 years</span>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">🎓</span>
+                    <span>Learn financial concepts</span>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">🎮</span>
+                    <span>Interactive scenarios</span>
+                </div>
+            </div>
+            
+            <button id="start-btn" class="btn btn-primary btn-large">
+                Start Your Journey
+                <span class="btn-arrow">→</span>
+            </button>
+            
+            <button id="continue-btn" class="btn btn-secondary" style="display: none;">
+                Continue Previous Game
+            </button>
+        </div>
+    </div>
+
+    <!-- Setup Screen -->
+    <div id="setup-screen" class="screen">
+        <div class="setup-container">
+            <h2>Let's Get Started</h2>
+            <p class="setup-subtitle">Tell us a bit about yourself to personalize your experience</p>
+            
+            <form id="setup-form">
+                <div class="form-group">
+                    <label for="player-name">What should we call you?</label>
+                    <input type="text" id="player-name" placeholder="Enter your name" maxlength="20" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="player-age">Your current age</label>
+                    <select id="player-age" required>
+                        <option value="">Select your age</option>
+                        <option value="18">18-22 (Just starting out)</option>
+                        <option value="25">23-27 (Early career)</option>
+                        <option value="30">28-35 (Established)</option>
+                        <option value="40">36-45 (Mid-career)</option>
+                        <option value="50">46-55 (Senior)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="player-income">Annual income range</label>
+                    <select id="player-income" required>
+                        <option value="">Select income range</option>
+                        <option value="30000">$25,000 - $40,000</option>
+                        <option value="50000">$40,000 - $60,000</option>
+                        <option value="75000">$60,000 - $90,000</option>
+                        <option value="100000">$90,000 - $120,000</option>
+                        <option value="150000">$120,000+</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-large">
+                    Begin Learning
+                    <span class="btn-arrow">→</span>
+                </button>
+            </form>
+            
+            <button id="back-to-welcome" class="btn btn-text">
+                ← Back
+            </button>
+        </div>
+    </div>
+
+    <!-- Tutorial Screen -->
+    <div id="tutorial-screen" class="screen">
+        <div class="tutorial-container">
+            <div class="tutorial-slides">
+                <div class="tutorial-slide active" data-slide="1">
+                    <div class="tutorial-icon">🤔</div>
+                    <h3>How It Works</h3>
+                    <p>You'll face real-life spending decisions. Choose what you'd normally do, and we'll show you the long-term impact of that choice.</p>
+                </div>
+                
+                <div class="tutorial-slide" data-slide="2">
+                    <div class="tutorial-icon">📈</div>
+                    <h3>The Power of Compound Growth</h3>
+                    <p>Small daily savings, when invested, grow exponentially over time. We'll calculate what your savings could become if invested at 7% annual return.</p>
+                </div>
+                
+                <div class="tutorial-slide" data-slide="3">
+                    <div class="tutorial-icon">💡</div>
+                    <h3>No Right or Wrong</h3>
+                    <p>This isn't about judgment—it's about awareness. Sometimes spending more brings value. The goal is to make informed choices.</p>
+                </div>
+            </div>
+            
+            <div class="tutorial-dots">
+                <span class="dot active" data-slide="1"></span>
+                <span class="dot" data-slide="2"></span>
+                <span class="dot" data-slide="3"></span>
+            </div>
+            
+            <div class="tutorial-nav">
+                <button id="tutorial-prev" class="btn btn-secondary" style="visibility: hidden;">← Previous</button>
+                <button id="tutorial-next" class="btn btn-primary">Next →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Game Screen -->
+    <div id="game-screen" class="screen">
+        <!-- Top Navigation Bar -->
+        <nav class="game-nav">
+            <div class="nav-left">
+                <span class="nav-logo">💰</span>
+                <span class="player-name-display"></span>
+            </div>
+            <div class="nav-center">
+                <span class="scenario-progress">Scenario <span id="current-scenario-num">1</span> of <span id="total-scenarios">7</span></span>
+            </div>
+            <div class="nav-right">
+                <button id="view-summary-btn" class="btn btn-small btn-secondary">View Summary</button>
+            </div>
+        </nav>
+
+        <!-- Financial Dashboard -->
+        <div class="dashboard">
+            <div class="dashboard-item">
+                <span class="dashboard-label">Lifetime Savings Impact</span>
+                <span class="dashboard-value" id="total-savings">$0</span>
+            </div>
+            <div class="dashboard-item">
+                <span class="dashboard-label">If Invested (30 yrs)</span>
+                <span class="dashboard-value" id="total-invested">$0</span>
+            </div>
+            <div class="dashboard-item">
+                <span class="dashboard-label">Decisions Made</span>
+                <span class="dashboard-value" id="decisions-made">0</span>
+            </div>
+        </div>
+
+        <!-- Scenario Container -->
+        <div class="scenario-container">
+            <div class="scenario-card">
+                <div class="scenario-category" id="scenario-category">Daily Spending</div>
+                <h2 class="scenario-title" id="scenario-title">Loading...</h2>
+                <p class="scenario-description" id="scenario-description"></p>
+                
+                <div class="choices-container" id="choices-container">
+                    <!-- Choices will be dynamically inserted -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Screen -->
+    <div id="results-screen" class="screen">
+        <div class="results-container">
+            <button id="back-to-scenario" class="btn btn-text back-btn">← Back to Choice</button>
+            
+            <h2 class="results-title">Your Choice: <span id="chosen-option"></span></h2>
+            
+            <div class="results-comparison">
+                <div class="comparison-card your-choice">
+                    <h4>Your Choice</h4>
+                    <div class="comparison-cost" id="your-choice-cost">$0/day</div>
+                </div>
+                <div class="comparison-card alternative">
+                    <h4>Most Frugal Option</h4>
+                    <div class="comparison-cost" id="alternative-cost">$0/day</div>
+                </div>
+                <div class="comparison-card difference">
+                    <h4>Difference</h4>
+                    <div class="comparison-cost" id="cost-difference">$0/day</div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <h3>Impact Over Time</h3>
+                <div class="chart-tabs">
+                    <button class="chart-tab active" data-view="nominal">Nominal $</button>
+                    <button class="chart-tab" data-view="invested">If Invested</button>
+                </div>
+                <canvas id="results-chart"></canvas>
+            </div>
+
+            <div class="educational-tip">
+                <div class="tip-icon">💡</div>
+                <div class="tip-content">
+                    <h4>Did You Know?</h4>
+                    <p id="tip-text"></p>
+                </div>
+            </div>
+
+            <div class="results-actions">
+                <button id="next-scenario-btn" class="btn btn-primary btn-large">
+                    Next Scenario →
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Summary Screen -->
+    <div id="summary-screen" class="screen">
+        <div class="summary-container">
+            <div class="summary-header">
+                <h2>🎉 Your Financial Journey Complete!</h2>
+                <p class="summary-subtitle">Here's what we learned about your spending habits</p>
+            </div>
+
+            <div class="summary-stats">
+                <div class="stat-card highlight">
+                    <span class="stat-value" id="summary-total-savings">$0</span>
+                    <span class="stat-label">Total Potential Savings (30 years)</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value" id="summary-invested">$0</span>
+                    <span class="stat-label">If Invested at 7% Return</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value" id="summary-monthly">$0</span>
+                    <span class="stat-label">Monthly Savings Potential</span>
+                </div>
+            </div>
+
+            <div class="decisions-review">
+                <h3>Your Decisions</h3>
+                <div id="decisions-list" class="decisions-list">
+                    <!-- Decisions will be dynamically inserted -->
+                </div>
+            </div>
+
+            <div class="biggest-impact">
+                <h3>💥 Biggest Impact Decision</h3>
+                <div id="biggest-impact-card" class="impact-card">
+                    <!-- Will be dynamically filled -->
+                </div>
+            </div>
+
+            <div class="summary-chart-container">
+                <h3>All Decisions Compared</h3>
+                <canvas id="summary-chart"></canvas>
+            </div>
+
+            <div class="summary-actions">
+                <button id="play-again-btn" class="btn btn-primary btn-large">Play Again</button>
+                <button id="share-results-btn" class="btn btn-secondary">Share Results</button>
+            </div>
+
+            <div class="financial-wisdom">
+                <h3>🧠 Your Financial Wisdom Score</h3>
+                <div class="wisdom-score">
+                    <div class="score-circle">
+                        <span id="wisdom-score-value">0</span>
+                        <span class="score-max">/100</span>
+                    </div>
+                    <p id="wisdom-message">Complete scenarios to see your score!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/utils/helpers.js"></script>
+    <script src="js/utils/storage.js"></script>
+    <script src="js/data/constants.js"></script>
+    <script src="js/data/scenarios.js"></script>
+    <script src="js/data/achievements.js"></script>
+    <script src="js/game/Calculator.js"></script>
+    <script src="js/game/Scenario.js"></script>
+    <script src="js/game/GameEngine.js"></script>
+    <script src="js/ui/Charts.js"></script>
+    <script src="js/ui/Animations.js"></script>
+    <script src="js/ui/UIManager.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
