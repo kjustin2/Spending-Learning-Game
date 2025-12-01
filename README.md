@@ -124,6 +124,29 @@ spending-learning-game/
 
 3. Start playing!
 
+## 🌐 Deploy to GitHub Pages
+
+This project is ready to deploy as a static site on GitHub Pages:
+
+### Option 1: Deploy from Main Branch
+1. Push your code to GitHub
+2. Go to your repository on GitHub
+3. Navigate to **Settings** → **Pages**
+4. Under "Source", select **Deploy from a branch**
+5. Choose `main` branch and `/ (root)` folder
+6. Click **Save**
+7. Your site will be live at `https://yourusername.github.io/spending-learning-game/`
+
+### Option 2: Using GitHub Actions (Automatic Deploys)
+1. Go to **Settings** → **Pages**
+2. Under "Source", select **GitHub Actions**
+3. GitHub will automatically deploy on every push to main
+
+### Notes
+- The site typically takes 1-2 minutes to deploy after changes
+- Check the **Actions** tab to monitor deployment status
+- No build step required - this is a pure static site!
+
 ## 🎯 Features
 
 ### MVP (Current)
