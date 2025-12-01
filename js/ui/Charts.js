@@ -99,6 +99,105 @@ const Charts = {
         const timeframes = Constants.TIME_PERIODS;
         const labels = timeframes.map(y => `${y} ${y === 1 ? 'Year' : 'Years'}`);
 
+        // Check for Asset/Wealth data
+        const hasAsset = impact.byTimeframe[30].wealthOutcome && impact.byTimeframe[30].wealthOutcome.assetValue > 0;
+        const hasWealthGrowth = impact.byTimeframe[30].wealthOutcome && impact.byTimeframe[30].wealthOutcome.netWorth > 0;
+
+        if (hasAsset) {
+            // ASSET CHART (e.g. House)
+            // Show Asset Value vs Total Cost Paid
+            const assetValues = timeframes.map(y => impact.byTimeframe[y].wealthOutcome.assetValue);
+            // For cost, we use the chosen option's annual cost * years (simplified)
+            // In a real mortgage, cost is non-linear, but this is a good approximation for MVP
+            const totalCosts = timeframes.map(y => impact.byTimeframe[y].chosenTotal.nominal);
+
+            this.instances[canvasId] = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Asset Value (Home Price)',
+                            data: assetValues,
+                            backgroundColor: 'rgba(56, 161, 105, 0.1)',
+                            borderColor: '#38a169', // Green
+                            fill: true,
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Total Cost Paid',
+                            data: totalCosts,
+                            backgroundColor: 'rgba(229, 62, 62, 0.1)',
+                            borderColor: '#e53e3e', // Red
+                            fill: true,
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: {
+                    ...this.defaultOptions,
+                    plugins: {
+                        ...this.defaultOptions.plugins,
+                        title: {
+                            display: true,
+                            text: 'Asset Value vs. Cost Over Time',
+                            font: { family: "'Inter', sans-serif", size: 14, weight: '600' }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return ' ' + context.dataset.label + ': ' + Helpers.formatCurrency(context.parsed.y);
+                                },
+                                footer: function(tooltipItems) {
+                                    const asset = tooltipItems[0].parsed.y;
+                                    const cost = tooltipItems[1] ? tooltipItems[1].parsed.y : 0;
+                                    // If only one item is hovered, we might need to find the other data point
+                                    // But Chart.js tooltips usually show all datasets for the index
+                                    // Let's just show Net Equity if we can
+                                    return ''; 
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            return;
+        }
+
+        if (hasWealthGrowth && impact.chosen.cost < 0) {
+            // INVESTMENT/INCOME CHART
+            // Show Net Worth Growth
+            const netWorthValues = timeframes.map(y => impact.byTimeframe[y].wealthOutcome.netWorth);
+            
+            this.instances[canvasId] = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Projected Wealth',
+                            data: netWorthValues,
+                            backgroundColor: '#38a169', // Green
+                            borderRadius: 6
+                        }
+                    ]
+                },
+                options: {
+                    ...this.defaultOptions,
+                    plugins: {
+                        ...this.defaultOptions.plugins,
+                        title: {
+                            display: true,
+                            text: 'Projected Wealth Accumulation',
+                            font: { family: "'Inter', sans-serif", size: 14, weight: '600' }
+                        }
+                    }
+                }
+            });
+            return;
+        }
+
+        // STANDARD SPENDING COMPARISON (Existing Logic)
         // Check if user chose the most frugal option
         const isUserFrugal = impact.chosen.isCheapest;
 

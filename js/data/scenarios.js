@@ -207,6 +207,8 @@ const ScenariosData = [
                 qualityScore: 85,
                 satisfactionNote: 'Building equity, stability, freedom to modify',
                 isInvestment: true,
+                isAsset: true,
+                totalValue: 350000,
                 appreciationRate: 0.035
             },
             {
@@ -655,7 +657,8 @@ const ScenariosData = [
                 frequency: 'yearly',
                 qualityScore: 85,
                 satisfactionNote: '24% raise, accelerate career growth',
-                returnRate: 0
+                returnRate: 0,
+                incomeChange: 13000
             },
             {
                 id: 'negotiate-stay',

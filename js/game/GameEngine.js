@@ -24,6 +24,7 @@ class GameEngine {
             decisions: [],
             totalNominalSavings: 0,
             totalInvestedSavings: 0,
+            totalNetWorth: 0,
             wisdomScore: 0,
             achievements: [],
             startTime: null,
@@ -108,6 +109,9 @@ class GameEngine {
             if (oldThirtyYearImpact) {
                 this.state.totalNominalSavings -= oldThirtyYearImpact.savingsVsExpensive.nominal;
                 this.state.totalInvestedSavings -= oldThirtyYearImpact.savingsVsExpensive.invested;
+                if (oldThirtyYearImpact.wealthOutcome) {
+                    this.state.totalNetWorth -= oldThirtyYearImpact.wealthOutcome.netWorth;
+                }
             }
             // Replace the old decision
             this.state.decisions[existingIndex] = decision;
@@ -122,6 +126,9 @@ class GameEngine {
             // Track cost vs cheapest
             this.state.totalNominalSavings += thirtyYearImpact.savingsVsExpensive.nominal;
             this.state.totalInvestedSavings += thirtyYearImpact.savingsVsExpensive.invested;
+            if (thirtyYearImpact.wealthOutcome) {
+                this.state.totalNetWorth += thirtyYearImpact.wealthOutcome.netWorth;
+            }
         }
 
         // Save state

@@ -319,10 +319,13 @@ class UIManager {
     updateDashboard() {
         const state = this.game.state;
         
+        // Use Net Worth if available (it includes asset growth), otherwise fallback to savings
+        const displayValue = (state.totalNetWorth !== undefined && state.totalNetWorth !== 0) ? state.totalNetWorth : state.totalNominalSavings;
+
         // Animate number updates
         Animations.countUp(
             this.elements.totalSavings, 
-            state.totalNominalSavings, 
+            displayValue, 
             800, 
             '$'
         );
@@ -354,19 +357,51 @@ class UIManager {
         // If user chose the most frugal option, show comparison with most expensive instead
         const isUserFrugal = impact.chosen.isCheapest;
         const comparisonOption = isUserFrugal ? impact.mostExpensive : impact.cheapest;
-        const alternativeCard = document.querySelector('.comparison-card.alternative h4');
-        if (alternativeCard) {
-            alternativeCard.textContent = isUserFrugal ? 'Most Expensive Option' : 'Most Frugal Option';
+        
+        // NEW LOGIC FOR ASSETS/WEALTH
+        const hasAsset = impact.byTimeframe[30].wealthOutcome && impact.byTimeframe[30].wealthOutcome.assetValue > 0;
+        const hasWealthGrowth = impact.byTimeframe[30].wealthOutcome && impact.byTimeframe[30].wealthOutcome.netWorth > 0;
+
+        if (hasAsset) {
+             // Show Asset Value
+             this.elements.yourChoiceCost.textContent = Helpers.formatCurrency(impact.byTimeframe[30].wealthOutcome.assetValue);
+             document.querySelector('.comparison-card.your-choice h4').textContent = "Projected Asset Value (30y)";
+             
+             // Alternative? Maybe show Cost?
+             this.elements.alternativeCost.textContent = Helpers.formatCurrency(impact.byTimeframe[30].chosenTotal.nominal);
+             document.querySelector('.comparison-card.alternative h4').textContent = "Total Cost Paid (30y)";
+             
+             // Difference -> Net Equity?
+             const equity = impact.byTimeframe[30].wealthOutcome.assetValue - impact.byTimeframe[30].chosenTotal.nominal; // Rough approx
+             this.elements.costDifference.textContent = Helpers.formatCurrency(equity);
+             document.querySelector('.comparison-card.difference h4').textContent = "Approx. Net Equity";
+        } else if (hasWealthGrowth && impact.chosen.cost < 0) {
+             // Investment/Income
+             this.elements.yourChoiceCost.textContent = Helpers.formatCurrency(impact.byTimeframe[30].wealthOutcome.netWorth);
+             document.querySelector('.comparison-card.your-choice h4').textContent = "Projected Wealth (30y)";
+             
+             this.elements.alternativeCost.textContent = "$0";
+             document.querySelector('.comparison-card.alternative h4').textContent = "Baseline";
+             
+             this.elements.costDifference.textContent = "+" + Helpers.formatCurrency(impact.byTimeframe[30].wealthOutcome.netWorth);
+             document.querySelector('.comparison-card.difference h4').textContent = "Net Gain";
+        } else {
+            // Standard Spending Logic
+            document.querySelector('.comparison-card.your-choice h4').textContent = "Your Choice";
+            const alternativeCard = document.querySelector('.comparison-card.alternative h4');
+            if (alternativeCard) {
+                alternativeCard.textContent = isUserFrugal ? 'Most Expensive Option' : 'Most Frugal Option';
+            }
+            document.querySelector('.comparison-card.difference h4').textContent = "Difference";
+
+            const frequencyText = Helpers.getFrequencyText(impact.chosen.frequency);
+            this.elements.yourChoiceCost.textContent = Helpers.formatCurrency(impact.chosen.cost, true) + frequencyText;
+            this.elements.alternativeCost.textContent = Helpers.formatCurrency(comparisonOption.cost, true) + frequencyText;
+            
+            const annualDiff = isUserFrugal ? impact.annualSavingsVsExpensive : impact.annualCostVsCheapest;
+            const diffText = annualDiff === 0 ? 'Same!' : Helpers.formatCurrency(annualDiff) + '/year';
+            this.elements.costDifference.textContent = diffText;
         }
-        
-        const frequencyText = Helpers.getFrequencyText(impact.chosen.frequency);
-        this.elements.yourChoiceCost.textContent = Helpers.formatCurrency(impact.chosen.cost, true) + frequencyText;
-        this.elements.alternativeCost.textContent = Helpers.formatCurrency(comparisonOption.cost, true) + frequencyText;
-        
-        // Calculate the difference based on which comparison we're showing
-        const annualDiff = isUserFrugal ? impact.annualSavingsVsExpensive : impact.annualCostVsCheapest;
-        const diffText = annualDiff === 0 ? 'Same!' : Helpers.formatCurrency(annualDiff) + '/year';
-        this.elements.costDifference.textContent = diffText;
         
         // Update tip
         this.elements.tipText.textContent = scenario.tip;

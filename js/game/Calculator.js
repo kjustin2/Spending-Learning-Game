@@ -260,6 +260,9 @@ const Calculator = {
             const savingsNominal = savingsVsExpensive * years;
             const costNominal = costVsCheapest * years;
             
+            // Calculate Wealth Outcome for the chosen option
+            const wealthOutcome = this.calculateWealthOutcome(chosen, years);
+
             impact.byTimeframe[years] = {
                 years,
                 savingsVsExpensive: {
@@ -273,7 +276,8 @@ const Calculator = {
                 chosenTotal: {
                     nominal: chosenAnnual * years,
                     invested: this.opportunityCost(chosenAnnual, years)
-                }
+                },
+                wealthOutcome: wealthOutcome
             };
         });
         
@@ -439,6 +443,69 @@ const Calculator = {
             employerMatchValue: futureValue - withoutMatch,
             totalContributed: totalAnnual * years,
             totalGrowth: futureValue - (totalAnnual * years)
+        };
+    },
+
+    /**
+     * Calculate wealth outcome of a specific choice over time
+     * @param {Object} choice - The choice object
+     * @param {number} years - Number of years to project
+     * @returns {Object} Wealth projection { netWorth, totalCost, assetValue }
+     */
+    calculateWealthOutcome(choice, years) {
+        let netWorth = 0;
+        let totalCost = 0;
+        let assetValue = 0;
+
+        // 1. Handle Assets (e.g., House)
+        if (choice.isAsset && choice.appreciationRate) {
+            const initialAssetValue = choice.totalValue || 0;
+            assetValue = this.homeAppreciation(initialAssetValue, years, choice.appreciationRate);
+            
+            // For MVP: Net Worth = Asset Value (assuming paid off or just tracking asset side)
+            // To be more accurate, we'd subtract remaining debt, but let's keep it simple:
+            // We are tracking the *Growth* of the asset.
+            netWorth += assetValue;
+        }
+
+        // 2. Handle Investments (e.g., Index Fund)
+        if (choice.returnRate) {
+            const monthlyAmount = choice.frequency === 'monthly' ? choice.cost : 
+                                 choice.frequency === 'yearly' ? choice.cost / 12 : 
+                                 choice.frequency === 'daily' ? choice.cost * 30.4 : choice.cost;
+
+            if (choice.cost < 0) {
+                // Investing (Negative cost = putting money away)
+                const investmentAmount = Math.abs(monthlyAmount);
+                // FV of annuity
+                netWorth += this.futureValueAnnuity(investmentAmount, choice.returnRate / 12, years * 12);
+            } else if (choice.category === 'credit') {
+                 // Debt Payoff or Interest
+                 // If returnRate is positive (debt payoff), it saves interest (equivalent to return)
+                 // If returnRate is negative (carrying balance), it costs interest
+                 if (choice.returnRate > 0) {
+                     // Payoff: You "earn" the interest you didn't pay
+                     // This is tricky to visualize as "Net Worth" without a baseline debt.
+                     // Let's treat it as: You have $X debt. Paying it off reduces negative net worth.
+                 }
+            }
+        } 
+        
+        // Standard Cost Calculation
+        if (choice.cost > 0) {
+             totalCost += this.totalCost(choice.cost, choice.frequency, years);
+        }
+
+        // 3. Handle Income Changes (e.g., New Job)
+        if (choice.incomeChange) {
+            // Cumulative extra income
+            netWorth += choice.incomeChange * years; 
+        }
+
+        return {
+            netWorth,
+            totalCost,
+            assetValue
         };
     },
 
