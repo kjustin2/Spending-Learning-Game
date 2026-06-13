@@ -768,6 +768,8 @@ class UIManager {
      * @param {Object} summary - Optional summary data
      */
     showSummary(summary = null) {
+        this.clearAchievementToasts();
+
         if (!summary) {
             if (!this.game.state.isComplete && this.game.scenarioManager.isComplete()) {
                 this.game.completeGame();
@@ -971,8 +973,9 @@ class UIManager {
      */
     showAchievementToasts(achievements) {
         if (!this.elements.achievementToastContainer || !achievements.length) return;
+        if (this.game.state.isComplete && achievements.length > 1) return;
 
-        achievements.forEach((achievement, index) => {
+        achievements.slice(0, 3).forEach((achievement, index) => {
             const toast = document.createElement('div');
             toast.className = 'achievement-toast';
             toast.innerHTML = `
@@ -992,6 +995,14 @@ class UIManager {
                 }, 3500);
             }, index * 150);
         });
+    }
+
+    /**
+     * Remove active achievement toasts before showing summary content.
+     */
+    clearAchievementToasts() {
+        if (!this.elements.achievementToastContainer) return;
+        this.elements.achievementToastContainer.innerHTML = '';
     }
     
     /**

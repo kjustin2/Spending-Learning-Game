@@ -418,8 +418,10 @@ const Charts = {
             .filter(category => categoryTotals[category.id] > 0);
         const ctx = canvas.getContext('2d');
 
+        categories.sort((a, b) => categoryTotals[b.id] - categoryTotals[a.id]);
+
         this.instances[canvasId] = new Chart(ctx, {
-            type: 'doughnut',
+            type: 'bar',
             data: {
                 labels: categories.map(category => category.label),
                 datasets: [
@@ -427,32 +429,55 @@ const Charts = {
                         label: '30-year impact',
                         data: categories.map(category => categoryTotals[category.id]),
                         backgroundColor: categories.map(category => category.color),
-                        borderColor: '#ffffff',
-                        borderWidth: 3,
-                        hoverOffset: 12
+                        borderColor: categories.map(category => category.color),
+                        borderWidth: 0,
+                        borderRadius: 8,
+                        barThickness: 26
                     }
                 ]
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y',
                 plugins: {
                     legend: {
-                        position: 'bottom',
-                        labels: {
-                            usePointStyle: true,
-                            padding: 18,
-                            font: {
-                                family: "'Inter', sans-serif",
-                                size: 12
-                            }
-                        }
+                        display: false
                     },
                     tooltip: {
                         backgroundColor: 'rgba(26, 54, 93, 0.92)',
                         callbacks: {
                             label: function(context) {
                                 return ' ' + context.label + ': ' + Helpers.formatCurrency(context.parsed);
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        grid: {
+                            color: Constants.CHART_COLORS.GRID
+                        },
+                        ticks: {
+                            font: {
+                                family: "'Inter', sans-serif",
+                                size: 12
+                            },
+                            callback: function(value) {
+                                return Helpers.formatCurrency(value);
+                            }
+                        }
+                    },
+                    y: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            font: {
+                                family: "'Inter', sans-serif",
+                                size: 12,
+                                weight: '600'
                             }
                         }
                     }

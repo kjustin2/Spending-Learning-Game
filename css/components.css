@@ -698,6 +698,7 @@
     display: flex;
     justify-content: center;
     gap: var(--spacing-md);
+    margin-top: var(--spacing-xl);
     margin-bottom: var(--spacing-2xl);
 }
 
@@ -1344,6 +1345,10 @@
     height: 320px !important;
 }
 
+#category-chart {
+    height: 360px !important;
+}
+
 .chart-tab.active {
     background: linear-gradient(135deg, var(--color-primary), var(--color-violet));
 }
@@ -1361,6 +1366,10 @@
     border-radius: var(--radius-lg);
     background: var(--color-surface);
     box-shadow: var(--shadow-md);
+}
+
+.final-takeaways {
+    margin-bottom: var(--spacing-xl);
 }
 
 .summary-panel h3,

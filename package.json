@@ -1,0 +1,12 @@
+{
+  "name": "spending-learning-game",
+  "version": "2.0.3",
+  "private": true,
+  "description": "Interactive static financial literacy game.",
+  "scripts": {
+    "test:summary": "node tests/summary-layout-check.mjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.60.0"
+  }
+}
