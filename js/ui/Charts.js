@@ -106,10 +106,16 @@ const Charts = {
         if (hasAsset) {
             // ASSET CHART (e.g. House)
             // Show Asset Value vs Total Cost Paid
-            const assetValues = timeframes.map(y => impact.byTimeframe[y].wealthOutcome.assetValue);
+            const assetValues = timeframes.map(y => {
+                const value = impact.byTimeframe[y].wealthOutcome.assetValue;
+                return view === 'real' ? Calculator.inflationAdjusted(value, y) : value;
+            });
             // For cost, we use the chosen option's annual cost * years (simplified)
             // In a real mortgage, cost is non-linear, but this is a good approximation for MVP
-            const totalCosts = timeframes.map(y => impact.byTimeframe[y].chosenTotal.nominal);
+            const totalCosts = timeframes.map(y => {
+                const value = impact.byTimeframe[y].chosenTotal.nominal;
+                return view === 'real' ? Calculator.inflationAdjusted(value, y) : value;
+            });
 
             this.instances[canvasId] = new Chart(ctx, {
                 type: 'line',
@@ -167,7 +173,10 @@ const Charts = {
         if (hasWealthGrowth && impact.chosen.cost < 0) {
             // INVESTMENT/INCOME CHART
             // Show Net Worth Growth
-            const netWorthValues = timeframes.map(y => impact.byTimeframe[y].wealthOutcome.netWorth);
+            const netWorthValues = timeframes.map(y => {
+                const value = impact.byTimeframe[y].wealthOutcome.netWorth;
+                return view === 'real' ? Calculator.inflationAdjusted(value, y) : value;
+            });
             
             this.instances[canvasId] = new Chart(ctx, {
                 type: 'bar',
@@ -204,9 +213,9 @@ const Charts = {
         // Prepare data based on view
         const chosenData = timeframes.map(years => {
             const tf = impact.byTimeframe[years];
-            return view === 'invested' 
-                ? tf.chosenTotal.invested 
-                : tf.chosenTotal.nominal;
+            if (view === 'invested') return tf.chosenTotal.invested;
+            if (view === 'real') return Calculator.inflationAdjusted(tf.chosenTotal.nominal, years);
+            return tf.chosenTotal.nominal;
         });
 
         // If user chose frugal option, show most expensive for comparison
@@ -215,19 +224,25 @@ const Charts = {
             const tf = impact.byTimeframe[years];
             const chosenTotal = view === 'invested' 
                 ? tf.chosenTotal.invested 
-                : tf.chosenTotal.nominal;
+                : view === 'real'
+                    ? Calculator.inflationAdjusted(tf.chosenTotal.nominal, years)
+                    : tf.chosenTotal.nominal;
             
             if (isUserFrugal) {
                 // Show most expensive option (chosen + savings vs expensive)
                 const savingsDiff = view === 'invested'
                     ? tf.savingsVsExpensive.invested
-                    : tf.savingsVsExpensive.nominal;
+                    : view === 'real'
+                        ? Calculator.inflationAdjusted(tf.savingsVsExpensive.nominal, years)
+                        : tf.savingsVsExpensive.nominal;
                 return chosenTotal + savingsDiff;
             } else {
                 // Show cheapest option (chosen - cost vs cheapest)
                 const costDiff = view === 'invested'
                     ? tf.costVsCheapest.invested
-                    : tf.costVsCheapest.nominal;
+                    : view === 'real'
+                        ? Calculator.inflationAdjusted(tf.costVsCheapest.nominal, years)
+                        : tf.costVsCheapest.nominal;
                 return chosenTotal - costDiff;
             }
         });
@@ -266,7 +281,9 @@ const Charts = {
                         display: true,
                         text: view === 'invested' 
                             ? 'Total Cost (If Difference Was Invested at 7%)' 
-                            : 'Total Cost Over Time',
+                            : view === 'real'
+                                ? "Total Cost in Today's Dollars"
+                                : 'Total Cost Over Time',
                         font: {
                             family: "'Inter', sans-serif",
                             size: 14,
@@ -366,6 +383,86 @@ const Charts = {
                             display: false
                         }
                     }
+                }
+            }
+        });
+    },
+
+    /**
+     * Create a category-level impact chart for the final summary.
+     * @param {string} canvasId - Canvas element ID
+     * @param {Array} decisions - Array of decision objects
+     */
+    createCategoryChart(canvasId, decisions) {
+        const canvas = document.getElementById(canvasId);
+        if (!canvas) {
+            console.error('Canvas not found:', canvasId);
+            return;
+        }
+
+        if (this.instances[canvasId]) {
+            this.instances[canvasId].destroy();
+        }
+
+        const categoryTotals = {};
+        decisions.forEach(decision => {
+            const scenario = ScenariosData.find(s => s.id === decision.scenarioId);
+            if (!scenario) return;
+            const impact30 = decision.impact.byTimeframe[30];
+            const value = Math.max(
+                Math.abs(impact30?.costVsCheapest?.invested || 0),
+                Math.abs(impact30?.savingsVsExpensive?.invested || 0),
+                Math.abs(impact30?.wealthOutcome?.netWorth || 0)
+            );
+            categoryTotals[scenario.category] = (categoryTotals[scenario.category] || 0) + value;
+        });
+
+        const categories = Object.values(Constants.CATEGORIES)
+            .filter(category => categoryTotals[category.id] > 0);
+        const ctx = canvas.getContext('2d');
+
+        this.instances[canvasId] = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: categories.map(category => category.label),
+                datasets: [
+                    {
+                        label: '30-year impact',
+                        data: categories.map(category => categoryTotals[category.id]),
+                        backgroundColor: categories.map(category => category.color),
+                        borderColor: '#ffffff',
+                        borderWidth: 3,
+                        hoverOffset: 12
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            usePointStyle: true,
+                            padding: 18,
+                            font: {
+                                family: "'Inter', sans-serif",
+                                size: 12
+                            }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(26, 54, 93, 0.92)',
+                        callbacks: {
+                            label: function(context) {
+                                return ' ' + context.label + ': ' + Helpers.formatCurrency(context.parsed);
+                            }
+                        }
+                    }
+                },
+                animation: {
+                    duration: Constants.UI.CHART_ANIMATION_DURATION,
+                    easing: 'easeOutQuart'
                 }
             }
         });

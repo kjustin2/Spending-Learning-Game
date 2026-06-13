@@ -145,12 +145,22 @@
         <nav class="game-nav">
             <div class="nav-left">
                 <span class="nav-logo">💰</span>
-                <span class="player-name-display"></span>
+                <div class="nav-player">
+                    <span class="nav-kicker">Money Choices</span>
+                    <span class="player-name-display"></span>
+                </div>
             </div>
             <div class="nav-center">
-                <span class="scenario-progress">Scenario <span id="current-scenario-num">1</span> of <span id="total-scenarios">7</span></span>
+                <span class="scenario-progress">Scenario <span id="current-scenario-num">1</span> of <span id="total-scenarios">19</span></span>
+                <div class="progress-track" aria-hidden="true">
+                    <span id="game-progress-fill" class="progress-fill"></span>
+                </div>
             </div>
             <div class="nav-right">
+                <div class="hud-score">
+                    <span class="hud-score-label">Wisdom</span>
+                    <span id="wisdom-hud">0</span>
+                </div>
                 <button id="view-summary-btn" class="btn btn-small btn-secondary">View Summary</button>
             </div>
         </nav>
@@ -171,12 +181,56 @@
             </div>
         </div>
 
+        <div class="command-center">
+            <section class="side-panel">
+                <div class="panel-header">
+                    <span>Category Trail</span>
+                </div>
+                <div id="category-map" class="category-map"></div>
+            </section>
+            <section class="side-panel">
+                <div class="panel-header">
+                    <span>Badge Shelf</span>
+                    <span id="achievement-count" class="panel-count">0</span>
+                </div>
+                <div id="achievement-shelf" class="achievement-shelf"></div>
+            </section>
+        </div>
+
         <!-- Scenario Container -->
         <div class="scenario-container">
             <div class="scenario-card">
                 <div class="scenario-category" id="scenario-category">Daily Spending</div>
                 <h2 class="scenario-title" id="scenario-title">Loading...</h2>
                 <p class="scenario-description" id="scenario-description"></p>
+
+                <div class="stakes-strip">
+                    <span class="stakes-label">Stakes</span>
+                    <p id="scenario-stakes"></p>
+                </div>
+
+                <div class="scenario-intel-grid">
+                    <div class="intel-card context-card">
+                        <h3>Signal Board</h3>
+                        <div id="scenario-context-stats" class="context-stats"></div>
+                    </div>
+                    <div class="intel-card">
+                        <h3>Assumptions</h3>
+                        <div id="scenario-assumptions" class="assumption-chips"></div>
+                    </div>
+                    <div class="intel-card risk-card">
+                        <h3>Watchout</h3>
+                        <p id="scenario-risk-note"></p>
+                    </div>
+                </div>
+
+                <div class="choice-header">
+                    <div>
+                        <span class="section-kicker">Pick your move</span>
+                        <h3>Compare the tradeoffs</h3>
+                    </div>
+                    <span id="scenario-focus" class="focus-pill">Opportunity cost</span>
+                </div>
                 
                 <div class="choices-container" id="choices-container">
                     <!-- Choices will be dynamically inserted -->
@@ -190,6 +244,13 @@
         <div class="results-container">
             <button id="back-to-scenario" class="btn btn-text back-btn">← Back to Choice</button>
             
+            <div class="result-reveal">
+                <span id="reveal-kicker" class="section-kicker">Impact reveal</span>
+                <h2 id="reveal-headline">Your money move has a long shadow</h2>
+                <div id="reveal-amount" class="reveal-amount">$0</div>
+                <p id="reveal-body"></p>
+            </div>
+
             <h2 class="results-title">Your Choice: <span id="chosen-option"></span></h2>
             
             <div class="results-comparison">
@@ -207,11 +268,21 @@
                 </div>
             </div>
 
+            <div id="result-breakdown-grid" class="result-breakdown-grid"></div>
+
+            <div id="result-achievements" class="result-achievements"></div>
+
+            <div class="action-takeaway">
+                <span class="section-kicker">Next money move</span>
+                <p id="result-action-text"></p>
+            </div>
+
             <div class="chart-container">
                 <h3>Impact Over Time</h3>
                 <div class="chart-tabs">
                     <button class="chart-tab active" data-view="nominal">Nominal $</button>
                     <button class="chart-tab" data-view="invested">If Invested</button>
+                    <button class="chart-tab" data-view="real">Today's $</button>
                 </div>
                 <canvas id="results-chart"></canvas>
             </div>
@@ -269,12 +340,34 @@
                 </div>
             </div>
 
+            <div class="summary-grid">
+                <div class="summary-panel">
+                    <h3>Category Heatmap</h3>
+                    <div id="category-summary" class="category-summary"></div>
+                </div>
+                <div class="summary-panel">
+                    <h3>Badges Earned</h3>
+                    <div id="achievements-gallery" class="achievements-gallery"></div>
+                </div>
+            </div>
+
             <div class="summary-chart-container">
                 <h3>All Decisions Compared</h3>
                 <canvas id="summary-chart"></canvas>
             </div>
 
+            <div class="summary-chart-container">
+                <h3>Category Impact</h3>
+                <canvas id="category-chart"></canvas>
+            </div>
+
+            <div class="final-takeaways">
+                <h3>Your Action Deck</h3>
+                <div id="final-takeaways-list" class="final-takeaways-list"></div>
+            </div>
+
             <div class="summary-actions">
+                <button id="continue-game-btn" class="btn btn-secondary" style="display: none;">Continue Game</button>
                 <button id="play-again-btn" class="btn btn-primary btn-large">Play Again</button>
                 <button id="share-results-btn" class="btn btn-secondary">Share Results</button>
             </div>
@@ -291,6 +384,8 @@
             </div>
         </div>
     </div>
+
+    <div id="achievement-toast-container" class="achievement-toast-container" aria-live="polite"></div>
 
     <!-- Scripts -->
     <script src="js/utils/helpers.js"></script>

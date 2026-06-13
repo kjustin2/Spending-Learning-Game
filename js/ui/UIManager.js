@@ -57,21 +57,38 @@ class UIManager {
             playerNameDisplay: document.querySelector('.player-name-display'),
             currentScenarioNum: document.getElementById('current-scenario-num'),
             totalScenarios: document.getElementById('total-scenarios'),
+            gameProgressFill: document.getElementById('game-progress-fill'),
+            wisdomHud: document.getElementById('wisdom-hud'),
             totalSavings: document.getElementById('total-savings'),
             totalInvested: document.getElementById('total-invested'),
             decisionsMade: document.getElementById('decisions-made'),
+            categoryMap: document.getElementById('category-map'),
+            achievementShelf: document.getElementById('achievement-shelf'),
+            achievementCount: document.getElementById('achievement-count'),
             scenarioCategory: document.getElementById('scenario-category'),
             scenarioTitle: document.getElementById('scenario-title'),
             scenarioDescription: document.getElementById('scenario-description'),
+            scenarioStakes: document.getElementById('scenario-stakes'),
+            scenarioContextStats: document.getElementById('scenario-context-stats'),
+            scenarioAssumptions: document.getElementById('scenario-assumptions'),
+            scenarioRiskNote: document.getElementById('scenario-risk-note'),
+            scenarioFocus: document.getElementById('scenario-focus'),
             choicesContainer: document.getElementById('choices-container'),
             viewSummaryBtn: document.getElementById('view-summary-btn'),
             
             // Results
             backToScenario: document.getElementById('back-to-scenario'),
+            revealKicker: document.getElementById('reveal-kicker'),
+            revealHeadline: document.getElementById('reveal-headline'),
+            revealAmount: document.getElementById('reveal-amount'),
+            revealBody: document.getElementById('reveal-body'),
             chosenOption: document.getElementById('chosen-option'),
             yourChoiceCost: document.getElementById('your-choice-cost'),
             alternativeCost: document.getElementById('alternative-cost'),
             costDifference: document.getElementById('cost-difference'),
+            resultBreakdownGrid: document.getElementById('result-breakdown-grid'),
+            resultAchievements: document.getElementById('result-achievements'),
+            resultActionText: document.getElementById('result-action-text'),
             chartTabs: document.querySelectorAll('.chart-tab'),
             tipText: document.getElementById('tip-text'),
             nextScenarioBtn: document.getElementById('next-scenario-btn'),
@@ -82,10 +99,15 @@ class UIManager {
             summaryMonthly: document.getElementById('summary-monthly'),
             decisionsList: document.getElementById('decisions-list'),
             biggestImpactCard: document.getElementById('biggest-impact-card'),
+            categorySummary: document.getElementById('category-summary'),
+            achievementsGallery: document.getElementById('achievements-gallery'),
+            finalTakeawaysList: document.getElementById('final-takeaways-list'),
             wisdomScoreValue: document.getElementById('wisdom-score-value'),
             wisdomMessage: document.getElementById('wisdom-message'),
+            continueGameBtn: document.getElementById('continue-game-btn'),
             playAgainBtn: document.getElementById('play-again-btn'),
-            shareResultsBtn: document.getElementById('share-results-btn')
+            shareResultsBtn: document.getElementById('share-results-btn'),
+            achievementToastContainer: document.getElementById('achievement-toast-container')
         };
     }
 
@@ -119,6 +141,10 @@ class UIManager {
         this.elements.nextScenarioBtn.addEventListener('click', () => this.handleNextScenario());
         
         // Summary screen
+        this.elements.continueGameBtn.addEventListener('click', () => {
+            this.loadCurrentScenario();
+            this.showScreen('game');
+        });
         this.elements.playAgainBtn.addEventListener('click', () => this.resetGame());
         this.elements.shareResultsBtn.addEventListener('click', () => this.shareResults());
         
@@ -126,6 +152,7 @@ class UIManager {
         this.game.on('choiceMade', (data) => this.onChoiceMade(data));
         this.game.on('scenarioChanged', (data) => this.onScenarioChanged(data));
         this.game.on('gameComplete', (data) => this.onGameComplete(data));
+        this.game.on('achievementsUnlocked', (achievements) => this.showAchievementToasts(achievements));
     }
 
     /**
@@ -251,23 +278,27 @@ class UIManager {
         
         // Update dashboard
         this.updateDashboard();
+        this.renderCategoryMap();
+        this.renderAchievementShelf();
         
         // Update scenario card
         this.elements.scenarioCategory.textContent = categoryInfo.label;
         this.elements.scenarioCategory.style.backgroundColor = categoryInfo.color;
         this.elements.scenarioTitle.textContent = scenario.title;
         this.elements.scenarioDescription.textContent = scenario.description;
+        this.renderScenarioIntel(scenario);
         
         // Render choices
-        this.renderChoices(scenario.choices);
+        this.renderChoices(scenario);
     }
     
     /**
      * Render choice buttons
      * @param {Array} choices - Array of choice objects
      */
-    renderChoices(choices) {
+    renderChoices(scenario) {
         this.elements.choicesContainer.innerHTML = '';
+        const choices = scenario.choices;
         
         choices.forEach((choice, index) => {
             const button = document.createElement('button');
@@ -276,13 +307,39 @@ class UIManager {
             
             const frequencyText = Helpers.getFrequencyText(choice.frequency);
             const costDisplay = Helpers.formatCurrency(choice.cost, choice.cost < 10) + frequencyText;
+            const impact = Calculator.calculateScenarioImpact(scenario, index);
+            const thirtyYear = impact.byTimeframe[30];
+            const annualImpact = impact.annualCostVsCheapest;
+            const investedSwing = choice.cost < 0 && thirtyYear.wealthOutcome?.netWorth
+                ? thirtyYear.wealthOutcome.netWorth
+                : impact.chosen.isCheapest
+                    ? thirtyYear.savingsVsExpensive.invested
+                    : thirtyYear.costVsCheapest.invested;
+            const swingLabel = choice.cost < 0 || impact.chosen.isCheapest ? '30y upside' : '30y extra cost';
+            const annualLabel = annualImpact === 0 ? 'Best value baseline' : `${Helpers.formatCurrency(annualImpact)}/yr vs baseline`;
+            const meters = (choice.display?.meters || []).map(meter => `
+                <div class="choice-meter">
+                    <span>${meter.label}</span>
+                    <div class="meter-track"><span style="width: ${Helpers.clamp(meter.value, 0, 100)}%"></span></div>
+                    <strong>${Math.round(meter.value)}</strong>
+                </div>
+            `).join('');
             
             button.innerHTML = `
+                <div class="choice-badge-row">
+                    <span class="choice-badge">${choice.display?.badge || 'Money move'}</span>
+                    <span class="choice-swing">${swingLabel}: ${Helpers.formatCurrency(Math.abs(investedSwing))}</span>
+                </div>
                 <div class="choice-content">
                     <span class="choice-label">${choice.label}</span>
                     <span class="choice-detail">${choice.detail}</span>
+                    <span class="choice-note">${choice.display?.oneLine || choice.satisfactionNote || ''}</span>
                 </div>
-                <span class="choice-cost">${costDisplay}</span>
+                <div class="choice-metrics">${meters}</div>
+                <div class="choice-footer">
+                    <span class="choice-annual">${annualLabel}</span>
+                    <span class="choice-cost">${costDisplay}</span>
+                </div>
             `;
             
             button.addEventListener('click', () => this.handleChoiceClick(index));
@@ -292,6 +349,87 @@ class UIManager {
         
         // Stagger animate choices
         Animations.staggerIn(this.elements.choicesContainer.querySelectorAll('.choice-btn'));
+    }
+
+    /**
+     * Render scenario context, assumptions, and educational framing.
+     * @param {Object} scenario - Current scenario
+     */
+    renderScenarioIntel(scenario) {
+        if (this.elements.scenarioStakes) {
+            this.elements.scenarioStakes.textContent = scenario.stakes || '';
+        }
+
+        if (this.elements.scenarioContextStats) {
+            this.elements.scenarioContextStats.innerHTML = (scenario.contextStats || []).map(stat => `
+                <div class="context-stat">
+                    <span>${stat.label}</span>
+                    <strong>${stat.value}</strong>
+                </div>
+            `).join('');
+        }
+
+        if (this.elements.scenarioAssumptions) {
+            this.elements.scenarioAssumptions.innerHTML = (scenario.assumptions || []).map(assumption => `
+                <span class="assumption-chip">${assumption}</span>
+            `).join('');
+        }
+
+        if (this.elements.scenarioRiskNote) {
+            this.elements.scenarioRiskNote.textContent = scenario.riskNote || 'Every money choice has tradeoffs beyond the spreadsheet.';
+        }
+
+        if (this.elements.scenarioFocus) {
+            const focus = (scenario.educationalFocus || 'money tradeoff').replace(/_/g, ' ');
+            this.elements.scenarioFocus.textContent = focus;
+        }
+    }
+
+    /**
+     * Render category progress pills.
+     */
+    renderCategoryMap() {
+        if (!this.elements.categoryMap) return;
+
+        const progress = this.game.state.categoryProgress || {};
+        const categories = Object.values(Constants.CATEGORIES);
+        this.elements.categoryMap.innerHTML = categories.map(category => {
+            const data = progress[category.id] || { completed: 0, total: this.game.scenarioManager.getScenariosByCategory(category.id).length, percentage: 0 };
+            return `
+                <div class="category-node" style="--category-color: ${category.color}">
+                    <span class="category-icon">${category.icon}</span>
+                    <div class="category-node-body">
+                        <span>${category.label}</span>
+                        <div class="mini-progress"><span style="width: ${data.percentage || 0}%"></span></div>
+                    </div>
+                    <strong>${data.completed || 0}/${data.total || 0}</strong>
+                </div>
+            `;
+        }).join('');
+    }
+
+    /**
+     * Render compact achievement shelf during play.
+     */
+    renderAchievementShelf() {
+        if (!this.elements.achievementShelf) return;
+
+        const achievements = this.game.state.achievements || [];
+        if (this.elements.achievementCount) {
+            this.elements.achievementCount.textContent = achievements.length;
+        }
+
+        if (achievements.length === 0) {
+            this.elements.achievementShelf.innerHTML = '<div class="empty-shelf">No badges yet</div>';
+            return;
+        }
+
+        this.elements.achievementShelf.innerHTML = achievements.slice(-4).map(achievement => `
+            <div class="shelf-badge" title="${achievement.description}">
+                <span>${achievement.icon}</span>
+                <strong>${achievement.title}</strong>
+            </div>
+        `).join('');
     }
     
     /**
@@ -338,6 +476,13 @@ class UIManager {
         );
         
         this.elements.decisionsMade.textContent = state.decisions.length;
+        if (this.elements.wisdomHud) {
+            this.elements.wisdomHud.textContent = state.wisdomScore || 0;
+        }
+        if (this.elements.gameProgressFill) {
+            const progress = this.game.getProgress();
+            this.elements.gameProgressFill.style.width = `${Helpers.clamp(progress.percentage, 0, 100)}%`;
+        }
     }
 
     // ===== Results Screen =====
@@ -349,6 +494,16 @@ class UIManager {
     showResults(result) {
         const { impact } = result;
         const scenario = this.game.scenarioManager.getScenarioById(impact.scenario.id);
+        const reveal = this.buildResultReveal(impact, scenario);
+
+        if (this.elements.revealKicker) this.elements.revealKicker.textContent = reveal.kicker;
+        if (this.elements.revealHeadline) this.elements.revealHeadline.textContent = reveal.headline;
+        if (this.elements.revealAmount) {
+            this.elements.revealAmount.textContent = reveal.amountText;
+            this.elements.revealAmount.classList.toggle('is-warning', reveal.tone === 'warning');
+            this.elements.revealAmount.classList.toggle('is-growth', reveal.tone === 'growth');
+        }
+        if (this.elements.revealBody) this.elements.revealBody.textContent = reveal.body;
         
         // Update chosen option display
         this.elements.chosenOption.textContent = impact.chosen.label;
@@ -405,6 +560,11 @@ class UIManager {
         
         // Update tip
         this.elements.tipText.textContent = scenario.tip;
+        this.renderResultBreakdown(impact, scenario, reveal);
+        this.renderResultAchievements(this.game.state.lastUnlocks || []);
+        if (this.elements.resultActionText) {
+            this.elements.resultActionText.textContent = scenario.actionTakeaway || 'Use the visible tradeoff to make the next decision more intentional.';
+        }
         
         // Update next button text
         const hasNext = this.game.scenarioManager.hasNextScenario();
@@ -415,6 +575,145 @@ class UIManager {
         
         // Show results screen
         this.showScreen('results');
+    }
+
+    /**
+     * Build the headline model for the result reveal.
+     * @param {Object} impact - Scenario impact
+     * @param {Object} scenario - Scenario data
+     * @returns {Object} Reveal display model
+     */
+    buildResultReveal(impact, scenario) {
+        const thirtyYear = impact.byTimeframe[30];
+        const wealthOutcome = thirtyYear.wealthOutcome || {};
+
+        if (wealthOutcome.assetValue > 0) {
+            return {
+                kicker: 'Asset path',
+                headline: scenario.reveal?.headline || 'This choice builds an asset over time',
+                amountText: Helpers.formatCurrency(wealthOutcome.assetValue),
+                body: scenario.reveal?.body || 'The projection includes asset appreciation, which makes the result different from a pure spending choice.',
+                tone: 'growth',
+                value: wealthOutcome.assetValue
+            };
+        }
+
+        if (impact.chosen.cost < 0 && wealthOutcome.netWorth > 0) {
+            return {
+                kicker: 'Wealth engine',
+                headline: scenario.reveal?.headline || 'This choice puts money to work',
+                amountText: Helpers.formatCurrency(wealthOutcome.netWorth),
+                body: scenario.reveal?.body || 'Regular contributions compound because each month buys more future growth.',
+                tone: 'growth',
+                value: wealthOutcome.netWorth
+            };
+        }
+
+        if (impact.chosen.isCheapest) {
+            const upside = thirtyYear.savingsVsExpensive.invested;
+            return {
+                kicker: 'Future upside',
+                headline: scenario.reveal?.headline || 'You defended future flexibility',
+                amountText: Helpers.formatCurrency(upside),
+                body: scenario.reveal?.body || 'Choosing the lower-cost option creates money that can be redirected into future goals.',
+                tone: 'growth',
+                value: upside
+            };
+        }
+
+        const cost = thirtyYear.costVsCheapest.invested;
+        return {
+            kicker: 'Opportunity cost',
+            headline: scenario.reveal?.headline || 'This upgrade has a visible long-term price',
+            amountText: Helpers.formatCurrency(cost),
+            body: scenario.reveal?.body || 'The choice may be worth it, but now the future cost is visible instead of hidden.',
+            tone: cost > 0 ? 'warning' : 'growth',
+            value: cost
+        };
+    }
+
+    /**
+     * Render result detail cards.
+     * @param {Object} impact - Impact data
+     * @param {Object} scenario - Scenario data
+     * @param {Object} reveal - Reveal model
+     */
+    renderResultBreakdown(impact, scenario, reveal) {
+        if (!this.elements.resultBreakdownGrid) return;
+
+        const thirtyYear = impact.byTimeframe[30];
+        const chosenAnnual = impact.chosen.annualCost || 0;
+        const annualDelta = impact.chosen.isCheapest ? impact.annualSavingsVsExpensive : impact.annualCostVsCheapest;
+        const monthlyDelta = annualDelta / 12;
+        const qualityScore = impact.chosen.qualityScore || 70;
+        const cards = [
+            {
+                label: 'Annual swing',
+                value: Helpers.formatCurrency(Math.abs(annualDelta)),
+                note: impact.chosen.isCheapest ? 'saved vs premium' : 'extra vs baseline'
+            },
+            {
+                label: 'Monthly pressure',
+                value: Helpers.formatCurrency(Math.abs(monthlyDelta)),
+                note: monthlyDelta === 0 ? 'no gap' : 'budget effect'
+            },
+            {
+                label: '30-year nominal',
+                value: Helpers.formatCurrency(Math.abs(impact.chosen.isCheapest ? thirtyYear.savingsVsExpensive.nominal : thirtyYear.costVsCheapest.nominal)),
+                note: 'before growth'
+            },
+            {
+                label: 'Experience score',
+                value: `${qualityScore}/100`,
+                note: impact.chosen.display?.badge || 'choice feel'
+            },
+            {
+                label: 'Your cost rate',
+                value: Helpers.formatCurrency(chosenAnnual),
+                note: 'annualized'
+            },
+            {
+                label: reveal.kicker,
+                value: reveal.amountText,
+                note: '30-year lens'
+            }
+        ];
+
+        this.elements.resultBreakdownGrid.innerHTML = cards.map(card => `
+            <div class="breakdown-card">
+                <span>${card.label}</span>
+                <strong>${card.value}</strong>
+                <small>${card.note}</small>
+            </div>
+        `).join('');
+    }
+
+    /**
+     * Render achievements unlocked by the latest choice.
+     * @param {Array} achievements - Newly unlocked achievements
+     */
+    renderResultAchievements(achievements) {
+        if (!this.elements.resultAchievements) return;
+
+        if (!achievements.length) {
+            this.elements.resultAchievements.innerHTML = '';
+            return;
+        }
+
+        this.elements.resultAchievements.innerHTML = `
+            <span class="section-kicker">Badge unlocked</span>
+            <div class="result-badge-row">
+                ${achievements.map(achievement => `
+                    <div class="result-badge">
+                        <span>${achievement.icon}</span>
+                        <div>
+                            <strong>${achievement.title}</strong>
+                            <small>${achievement.description}</small>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
     }
     
     /**
@@ -450,6 +749,8 @@ class UIManager {
     
     onChoiceMade(data) {
         this.updateDashboard();
+        this.renderCategoryMap();
+        this.renderAchievementShelf();
     }
     
     onScenarioChanged(data) {
@@ -468,7 +769,7 @@ class UIManager {
      */
     showSummary(summary = null) {
         if (!summary) {
-            if (!this.game.state.isComplete) {
+            if (!this.game.state.isComplete && this.game.scenarioManager.isComplete()) {
                 this.game.completeGame();
             }
             summary = this.game.getFinalSummary();
@@ -507,10 +808,14 @@ class UIManager {
         
         // Render biggest impact
         this.renderBiggestImpact(summary.biggestImpactDecision, summary.biggestImpactAmount);
+        this.renderCategorySummary(summary);
+        this.renderAchievementsGallery(summary.achievements || []);
+        this.renderFinalTakeaways(summary.decisions);
         
         // Create summary chart
         setTimeout(() => {
             Charts.createSummaryChart('summary-chart', summary.decisions);
+            Charts.createCategoryChart('category-chart', summary.decisions);
         }, 800);
         
         // Update wisdom score
@@ -518,6 +823,9 @@ class UIManager {
             Animations.countUp(this.elements.wisdomScoreValue, summary.wisdomScore, 1500);
         }, 1000);
         this.elements.wisdomMessage.textContent = summary.wisdomMessage;
+        if (this.elements.continueGameBtn) {
+            this.elements.continueGameBtn.style.display = this.game.state.isComplete ? 'none' : 'inline-flex';
+        }
         
         this.showScreen('summary');
     }
@@ -573,6 +881,125 @@ class UIManager {
                 could cost this much over 30 years (if invested)
             </div>
         `;
+    }
+
+    /**
+     * Render category completion and impact summary.
+     * @param {Object} summary - Final summary
+     */
+    renderCategorySummary(summary) {
+        if (!this.elements.categorySummary) return;
+
+        const categoryImpact = this.getCategoryImpact(summary.decisions);
+        const categoryProgress = summary.categoryProgress || this.game.state.categoryProgress || {};
+
+        this.elements.categorySummary.innerHTML = Object.values(Constants.CATEGORIES).map(category => {
+            const progress = categoryProgress[category.id] || { completed: 0, total: 0, percentage: 0 };
+            const impact = categoryImpact[category.id] || 0;
+            return `
+                <div class="category-summary-row" style="--category-color: ${category.color}">
+                    <div>
+                        <span>${category.icon}</span>
+                        <strong>${category.label}</strong>
+                    </div>
+                    <div class="category-summary-meta">
+                        <span>${progress.completed}/${progress.total}</span>
+                        <strong>${Helpers.formatCurrency(Math.abs(impact))}</strong>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    /**
+     * Render final achievement gallery.
+     * @param {Array} achievements - Earned achievements
+     */
+    renderAchievementsGallery(achievements) {
+        if (!this.elements.achievementsGallery) return;
+
+        if (!achievements.length) {
+            this.elements.achievementsGallery.innerHTML = '<div class="empty-shelf">No badges earned yet</div>';
+            return;
+        }
+
+        this.elements.achievementsGallery.innerHTML = achievements.map(achievement => `
+            <div class="gallery-badge">
+                <span>${achievement.icon}</span>
+                <strong>${achievement.title}</strong>
+                <small>${achievement.description}</small>
+            </div>
+        `).join('');
+    }
+
+    /**
+     * Render concise action takeaways from the highest-impact choices.
+     * @param {Array} decisions - Decision records
+     */
+    renderFinalTakeaways(decisions) {
+        if (!this.elements.finalTakeawaysList) return;
+
+        const ranked = [...decisions].sort((a, b) => {
+            const aImpact = Math.abs(a.impact.byTimeframe[30]?.costVsCheapest?.invested || a.impact.byTimeframe[30]?.savingsVsExpensive?.invested || 0);
+            const bImpact = Math.abs(b.impact.byTimeframe[30]?.costVsCheapest?.invested || b.impact.byTimeframe[30]?.savingsVsExpensive?.invested || 0);
+            return bImpact - aImpact;
+        }).slice(0, 4);
+
+        this.elements.finalTakeawaysList.innerHTML = ranked.map(decision => {
+            const scenario = this.game.scenarioManager.getScenarioById(decision.scenarioId);
+            return `
+                <div class="takeaway-card">
+                    <span>${decision.scenarioTitle}</span>
+                    <strong>${scenario?.actionTakeaway || 'Make this choice intentional before it becomes automatic.'}</strong>
+                </div>
+            `;
+        }).join('');
+    }
+
+    /**
+     * Group 30-year invested impact by category.
+     * @param {Array} decisions - Decision records
+     * @returns {Object} Category impact map
+     */
+    getCategoryImpact(decisions) {
+        return decisions.reduce((acc, decision) => {
+            const scenario = this.game.scenarioManager.getScenarioById(decision.scenarioId);
+            if (!scenario) return acc;
+            const impact = decision.impact.byTimeframe[30]?.costVsCheapest?.invested ||
+                decision.impact.byTimeframe[30]?.savingsVsExpensive?.invested ||
+                0;
+            acc[scenario.category] = (acc[scenario.category] || 0) + impact;
+            return acc;
+        }, {});
+    }
+
+    /**
+     * Show achievement unlock toasts.
+     * @param {Array} achievements - Newly unlocked achievements
+     */
+    showAchievementToasts(achievements) {
+        if (!this.elements.achievementToastContainer || !achievements.length) return;
+
+        achievements.forEach((achievement, index) => {
+            const toast = document.createElement('div');
+            toast.className = 'achievement-toast';
+            toast.innerHTML = `
+                <span>${achievement.icon}</span>
+                <div>
+                    <strong>${achievement.title}</strong>
+                    <small>${achievement.description}</small>
+                </div>
+            `;
+
+            setTimeout(() => {
+                this.elements.achievementToastContainer.appendChild(toast);
+                requestAnimationFrame(() => toast.classList.add('visible'));
+                setTimeout(() => {
+                    toast.classList.remove('visible');
+                    setTimeout(() => toast.remove(), 300);
+                }, 3500);
+            }, index * 150);
+        });
     }
     
     /**

@@ -169,7 +169,10 @@ const Storage = {
      */
     hasSavedGame() {
         const state = this.loadGameState();
-        return state !== null && state.currentScenarioIndex > 0;
+        return state !== null && (
+            state.currentScenarioIndex > 0 ||
+            (Array.isArray(state.decisions) && state.decisions.length > 0)
+        );
     },
 
     /**

@@ -1,21 +1,23 @@
 /* ===== CSS Variables ===== */
 :root {
     /* Colors */
-    --color-primary: #1a365d;
-    --color-primary-light: #2c5282;
-    --color-primary-dark: #1a202c;
+    --color-primary: #172554;
+    --color-primary-light: #2563eb;
+    --color-primary-dark: #0f172a;
     
-    --color-secondary: #38a169;
-    --color-secondary-light: #48bb78;
-    --color-secondary-dark: #276749;
+    --color-secondary: #10b981;
+    --color-secondary-light: #34d399;
+    --color-secondary-dark: #047857;
     
-    --color-accent: #dd6b20;
-    --color-accent-light: #ed8936;
+    --color-accent: #f97316;
+    --color-accent-light: #fb923c;
+    --color-cool: #06b6d4;
+    --color-violet: #7c3aed;
     
     --color-danger: #e53e3e;
     --color-warning: #d69e2e;
     
-    --color-background: #f7fafc;
+    --color-background: #eef2ff;
     --color-surface: #ffffff;
     --color-surface-elevated: #ffffff;
     
@@ -57,8 +59,8 @@
     /* Border Radius */
     --radius-sm: 0.25rem;
     --radius-md: 0.5rem;
-    --radius-lg: 1rem;
-    --radius-xl: 1.5rem;
+    --radius-lg: 0.75rem;
+    --radius-xl: 1rem;
     --radius-full: 9999px;
     
     /* Shadows */
@@ -96,7 +98,8 @@ body {
     font-weight: var(--font-weight-normal);
     line-height: 1.6;
     color: var(--color-text-primary);
-    background-color: var(--color-background);
+    background:
+        linear-gradient(180deg, #eef2ff 0%, #f8fafc 52%, #ecfeff 100%);
     min-height: 100vh;
     overflow-x: hidden;
 }

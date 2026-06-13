@@ -766,6 +766,382 @@ const ScenariosData = [
     }
 ];
 
+const ScenarioDisplayEnhancements = {
+    'dinner-pasta': {
+        stakes: 'A small dinner upgrade can become a six-figure retirement swing.',
+        contextStats: [
+            { label: 'Annual spread', value: '$1,460' },
+            { label: '30-year invested gap', value: '$138K+' },
+            { label: 'Habit type', value: 'Daily' }
+        ],
+        assumptions: ['365 dinners per year', 'Saved difference invested monthly at 7%', 'Food quality still matters'],
+        riskNote: 'The lowest-cost meal is not automatically best if it makes the habit unsustainable.',
+        reveal: {
+            headline: 'Daily food choices scale fast',
+            body: 'The lesson is not to eat joyless meals. It is to notice which small upgrades are worth defending and which ones are just autopilot.'
+        },
+        actionTakeaway: 'Pick a default dinner tier and intentionally spend more only when the meal is worth it.'
+    },
+    'morning-coffee': {
+        stakes: 'Your morning ritual is a repeat purchase with investment-sized consequences.',
+        contextStats: [
+            { label: 'Premium habit', value: '$2,190/yr' },
+            { label: 'Basic habit', value: '$91/yr' },
+            { label: 'Decision rhythm', value: 'Every day' }
+        ],
+        assumptions: ['One coffee per day', 'No extra cafe snacks included', 'Difference invested at 7%'],
+        riskNote: 'A cafe can be social space, focus time, or pure convenience. Price is only one part of value.',
+        reveal: {
+            headline: 'The ritual is the real purchase',
+            body: 'A few dollars feels harmless once. Repeated every day, it becomes one of the biggest lifestyle levers in the game.'
+        },
+        actionTakeaway: 'Try a weekly cafe budget instead of a daily default.'
+    },
+    'lunch-choices': {
+        stakes: 'Workday lunch can quietly become a car-payment-sized expense.',
+        contextStats: [
+            { label: 'Workdays modeled', value: '250/yr' },
+            { label: 'Restaurant gap', value: '$3,500/yr' },
+            { label: 'Energy factor', value: 'High' }
+        ],
+        assumptions: ['250 work lunches per year', 'Packed lunch cost includes groceries', 'Savings invested monthly'],
+        riskNote: 'Time, nutrition, and social breaks can justify spending more sometimes.',
+        reveal: {
+            headline: 'Lunch is a weekly wealth lever',
+            body: 'The biggest gains come from changing the default, not from never buying lunch out again.'
+        },
+        actionTakeaway: 'Choose two or three planned restaurant lunches per week and make the rest automatic.'
+    },
+    'car-purchase': {
+        stakes: 'Car replacement habits can dominate decades of savings.',
+        contextStats: [
+            { label: 'Premium car', value: '$45K' },
+            { label: 'Replacement cycle', value: '5 yrs' },
+            { label: 'First 5-year loss', value: '~60%' }
+        ],
+        assumptions: ['Replacement cycle simplified to five years', 'Insurance and repairs excluded', 'Depreciation modeled annually'],
+        riskNote: 'Reliability, commute needs, and safety can make the cheapest car a false economy.',
+        reveal: {
+            headline: 'Depreciation is the hidden boss fight',
+            body: 'The sticker price is only the opening move. The wealth swing comes from replacing expensive assets before they are fully used.'
+        },
+        actionTakeaway: 'Aim for reliable transportation with a replacement cycle you can defend mathematically.'
+    },
+    'commute-method': {
+        stakes: 'A commute is a daily subscription to time, comfort, and transportation costs.',
+        contextStats: [
+            { label: 'Driving model', value: '$400/mo' },
+            { label: 'Transit model', value: '$100/mo' },
+            { label: 'Bike model', value: '$25/mo' }
+        ],
+        assumptions: ['10 miles each way', 'Parking and maintenance included in drive estimate', 'Weather/time friction not priced'],
+        riskNote: 'A cheaper commute can fail if it is unreliable or costs too much time.',
+        reveal: {
+            headline: 'Commutes tax both money and energy',
+            body: 'The best answer balances cost, control, and whether the routine helps or drains the rest of your day.'
+        },
+        actionTakeaway: 'Test the lower-cost option for a week before committing your whole routine.'
+    },
+    'rent-vs-buy': {
+        stakes: 'Housing decisions mix lifestyle, leverage, equity, and risk.',
+        contextStats: [
+            { label: 'Home price', value: '$350K' },
+            { label: 'Mortgage rate', value: '6.5%' },
+            { label: 'Home growth', value: '3.5%' }
+        ],
+        assumptions: ['20% down payment', 'Maintenance and taxes simplified', 'Rent difference can be invested'],
+        riskNote: 'Buying can be great, but transaction costs and maintenance make short timelines risky.',
+        reveal: {
+            headline: 'Housing is not just rent vs equity',
+            body: 'The winning move depends on time horizon, flexibility, maintenance risk, and what you do with the cash difference.'
+        },
+        actionTakeaway: 'Treat housing as a lifestyle decision with a break-even timeline, not a slogan.'
+    },
+    'apartment-size': {
+        stakes: 'Extra rooms feel normal quickly, but the rent premium keeps compounding.',
+        contextStats: [
+            { label: 'Space premium', value: '$800/mo' },
+            { label: '10-year nominal gap', value: '$96K' },
+            { label: 'Comfort value', value: 'Personal' }
+        ],
+        assumptions: ['Rent stays constant for simplicity', 'Saved difference invested at 7%', 'Utilities excluded'],
+        riskNote: 'Space can support work, relationships, and mental health. Do not optimize rent in isolation.',
+        reveal: {
+            headline: 'Lifestyle creep often has a floorplan',
+            body: 'The larger space may be worth it, but the cost deserves a visible place in the decision.'
+        },
+        actionTakeaway: 'Choose space for a named purpose, not just because it is the next default tier.'
+    },
+    'streaming-services': {
+        stakes: 'Small monthly subscriptions can stack into a stealth wealth leak.',
+        contextStats: [
+            { label: 'Full stack', value: '$120/mo' },
+            { label: 'Curated stack', value: '$45/mo' },
+            { label: 'Audit rhythm', value: 'Quarterly' }
+        ],
+        assumptions: ['Entertainment subscriptions only', 'No price hikes modeled', 'Cancelled money invested'],
+        riskNote: 'Subscriptions are not bad if you actually use them. The trap is paying for forgotten access.',
+        reveal: {
+            headline: 'Convenience becomes expensive when it is invisible',
+            body: 'The easiest win is not cutting everything. It is making every recurring charge re-earn its place.'
+        },
+        actionTakeaway: 'Rotate services monthly and cancel anything you have not used in 30 days.'
+    },
+    'phone-upgrade': {
+        stakes: 'Upgrade cycles turn tech excitement into a recurring wealth decision.',
+        contextStats: [
+            { label: 'Yearly flagship', value: '$1,200/yr' },
+            { label: 'Midrange cycle', value: '$115/yr' },
+            { label: 'First-year loss', value: '~40%' }
+        ],
+        assumptions: ['No resale value modeled', 'Annualized purchase cost', 'Phone plan unchanged'],
+        riskNote: 'A phone is a core tool. Paying more can be rational if it improves work, photos, or reliability.',
+        reveal: {
+            headline: 'The upgrade timer is the real cost',
+            body: 'Keeping great devices longer usually beats chasing tiny yearly improvements.'
+        },
+        actionTakeaway: 'Set an upgrade rule before the launch hype starts.'
+    },
+    'investment-strategy': {
+        stakes: 'The same $500/month creates radically different futures depending on where it lives.',
+        contextStats: [
+            { label: 'Monthly amount', value: '$500' },
+            { label: 'Index model', value: '7%' },
+            { label: 'Checking model', value: '0.1%' }
+        ],
+        assumptions: ['Returns are annual averages', 'No taxes or fees modeled', 'Contributions happen monthly'],
+        riskNote: 'Higher expected return comes with volatility. Emergency money should not be forced into risky assets.',
+        reveal: {
+            headline: 'Asset location changes the ending',
+            body: 'The contribution matters, but the return engine decides how hard each dollar works.'
+        },
+        actionTakeaway: 'Match account type to time horizon: cash for near-term needs, diversified investments for long-term goals.'
+    },
+    'treasury-vs-stocks': {
+        stakes: 'Risk tolerance decides how much volatility you accept for long-term growth.',
+        contextStats: [
+            { label: 'Starting amount', value: '$10K' },
+            { label: 'Stock model', value: '7%' },
+            { label: 'Bond model', value: '4.5%' }
+        ],
+        assumptions: ['One-time investment', 'Average annual returns', 'No taxes or rebalancing modeled'],
+        riskNote: 'The best portfolio is one you can hold through bad markets.',
+        reveal: {
+            headline: 'Volatility is the price of growth',
+            body: 'The mathematically highest return is not useful if panic makes you sell at the worst moment.'
+        },
+        actionTakeaway: 'Choose a mix that fits both your timeline and your behavior under stress.'
+    },
+    'real-estate-investment': {
+        stakes: 'Real estate can build wealth, but complexity is part of the cost.',
+        contextStats: [
+            { label: 'Rental down payment', value: '$60K' },
+            { label: 'REIT entry', value: '$10K' },
+            { label: 'Effort gap', value: 'Huge' }
+        ],
+        assumptions: ['Average returns simplified', 'Vacancy and repairs not itemized', 'Liquidity differs by option'],
+        riskNote: 'Direct real estate can fail through vacancy, concentration, or underestimating repairs.',
+        reveal: {
+            headline: 'Returns are not the only scoreboard',
+            body: 'Direct ownership may pay more, but REITs and index funds buy back time and flexibility.'
+        },
+        actionTakeaway: 'Account for time, concentration, and cash reserves before chasing the highest projected return.'
+    },
+    'emergency-fund': {
+        stakes: 'Safety cash looks boring until it prevents expensive debt.',
+        contextStats: [
+            { label: 'Target buffer', value: '$15K' },
+            { label: 'HYSA model', value: '4.5%' },
+            { label: 'Purpose', value: 'Protection' }
+        ],
+        assumptions: ['Three to six months of expenses', 'Cash stays liquid', 'Invested portion uses blended return'],
+        riskNote: 'An unfunded emergency can force selling investments or taking high-interest debt.',
+        reveal: {
+            headline: 'Cash has a job: keeping bad luck from becoming debt',
+            body: 'The return is lower because the purpose is different. Liquidity is the feature.'
+        },
+        actionTakeaway: 'Build the buffer first, then invest aggressively with money you can leave alone.'
+    },
+    'credit-card-usage': {
+        stakes: 'Credit cards can either pay you or tax you at punishing rates.',
+        contextStats: [
+            { label: 'Rewards model', value: '2%' },
+            { label: 'Debt APR', value: '22%' },
+            { label: 'Balance modeled', value: '$2K' }
+        ],
+        assumptions: ['Rewards paid monthly', 'Carried balance averages $2,000', 'No late fees modeled'],
+        riskNote: 'Rewards are not worth it if they encourage overspending or balance carrying.',
+        reveal: {
+            headline: 'Credit is a tool with sharp edges',
+            body: 'Paying in full turns the system in your favor. Carrying a balance flips the math fast.'
+        },
+        actionTakeaway: 'Use autopay in full or avoid the card for categories where spending slips.'
+    },
+    'debt-payoff': {
+        stakes: 'High-interest debt is a guaranteed negative return until it is gone.',
+        contextStats: [
+            { label: 'Debt balance', value: '$5K' },
+            { label: 'APR', value: '22%' },
+            { label: 'Extra cash', value: '$500/mo' }
+        ],
+        assumptions: ['APR stays constant', 'No new debt added', 'Investment model uses 7%'],
+        riskNote: 'Investing while carrying 22% debt usually means taking risk to lose money slower.',
+        reveal: {
+            headline: 'Debt payoff wins because the return is guaranteed',
+            body: 'Beating a 22% guaranteed cost is not a realistic investing plan.'
+        },
+        actionTakeaway: 'Eliminate high-interest debt first, then redirect the same payment into investments.'
+    },
+    'credit-score-building': {
+        stakes: 'Credit history is boring until it changes loan rates by thousands.',
+        contextStats: [
+            { label: 'Target score', value: '750+' },
+            { label: 'Starter limit', value: '$500' },
+            { label: 'Cost to build', value: '$0' }
+        ],
+        assumptions: ['Payments are on time', 'Utilization stays low', 'No loan application timing modeled'],
+        riskNote: 'Credit building only helps if the payment habit is disciplined.',
+        reveal: {
+            headline: 'A small card can unlock cheaper borrowing later',
+            body: 'The goal is not debt. The goal is a clean record that lowers future costs.'
+        },
+        actionTakeaway: 'Use a tiny recurring charge and autopay it in full.'
+    },
+    'job-hopping': {
+        stakes: 'Early salary jumps echo through every future raise and savings goal.',
+        contextStats: [
+            { label: 'Outside offer', value: '$68K' },
+            { label: 'Current path', value: '$58K' },
+            { label: 'Raise gap', value: '$13K' }
+        ],
+        assumptions: ['Raises compound from new base', 'Taxes excluded', 'Non-money job fit still matters'],
+        riskNote: 'A higher salary can be a bad trade if the job harms health, growth, or stability.',
+        reveal: {
+            headline: 'Income is the strongest lever',
+            body: 'Expense cuts help, but bigger income changes can reshape every future financial choice.'
+        },
+        actionTakeaway: 'Negotiate with real market data and evaluate both pay and growth trajectory.'
+    },
+    'career-investment': {
+        stakes: 'Skill investments can beat portfolio returns by raising your income engine.',
+        contextStats: [
+            { label: 'Certification', value: '$3K' },
+            { label: 'Degree', value: '$40K' },
+            { label: 'Payback lens', value: 'ROI' }
+        ],
+        assumptions: ['Salary lift is modeled as potential', 'Time cost not priced', 'Outcome depends on field demand'],
+        riskNote: 'Education ROI depends on employer demand, completion, and whether the credential is valued.',
+        reveal: {
+            headline: 'Your earning power is an asset',
+            body: 'The best career investment is targeted enough to pay back quickly and credible enough to change opportunities.'
+        },
+        actionTakeaway: 'Choose credentials with visible job postings, salary data, and a short payback path.'
+    },
+    'retirement-contribution': {
+        stakes: 'An employer match is one of the rare instant returns in personal finance.',
+        contextStats: [
+            { label: 'Your 6%', value: '$3,600/yr' },
+            { label: 'Employer match', value: '$1,800/yr' },
+            { label: 'Instant return', value: '50%' }
+        ],
+        assumptions: ['Salary is $60,000', 'Match vests immediately for simplicity', 'Invested at 7%'],
+        riskNote: 'Cash flow matters, but skipping the full match is expensive if you can afford the contribution.',
+        reveal: {
+            headline: 'The match is free fuel',
+            body: 'Before chasing complex strategies, capture money your employer is already offering.'
+        },
+        actionTakeaway: 'Contribute at least enough to get the full match before optimizing elsewhere.'
+    }
+};
+
+function getScenarioTheme(category) {
+    const categoryInfo = Object.values(Constants.CATEGORIES).find(item => item.id === category);
+    return {
+        color: categoryInfo?.color || '#4a5568',
+        icon: categoryInfo?.icon || '•',
+        label: categoryInfo?.label || category
+    };
+}
+
+function createDefaultEnhancement(scenario) {
+    const theme = getScenarioTheme(scenario.category);
+    return {
+        stakes: `This ${theme.label.toLowerCase()} choice changes both today's comfort and your future flexibility.`,
+        contextStats: [
+            { label: 'Category', value: theme.label },
+            { label: 'Options', value: String(scenario.choices.length) },
+            { label: 'Projection', value: '30 yrs' }
+        ],
+        assumptions: ['Costs are simplified estimates', 'Savings are modeled as invested monthly', 'Personal fit still matters'],
+        riskNote: 'The cheapest option is only useful if you can actually stick with it.',
+        reveal: {
+            headline: 'Every choice has a future shadow',
+            body: 'The game makes the long-term tradeoff visible so you can decide whether the short-term value is worth it.'
+        },
+        actionTakeaway: 'Choose the option you can explain clearly to your future self.'
+    };
+}
+
+function deriveChoiceBadge(choice) {
+    if (choice.cost < 0 || choice.returnRate > 0.08) return 'Growth play';
+    if (choice.qualityScore >= 90) return 'Premium feel';
+    if (choice.qualityScore <= 45) return 'Hard tradeoff';
+    if (choice.cost === 0) return 'No cash cost';
+    return 'Balanced pick';
+}
+
+function deriveSimplicityScore(choice) {
+    if (choice.frequency === 'once') return 78;
+    if (choice.frequency === 'monthly') return 72;
+    if (choice.frequency === 'yearly') return 68;
+    if (choice.frequency === 'every5years') return 55;
+    return 62;
+}
+
+function annualDisplayCost(choice) {
+    const multipliers = {
+        daily: 365,
+        weekly: 52,
+        monthly: 12,
+        yearly: 1,
+        once: 1,
+        every5years: 0.2
+    };
+    return choice.cost * (multipliers[choice.frequency] || 1);
+}
+
+function enhanceScenarioData() {
+    ScenariosData.forEach(scenario => {
+        const enhancement = ScenarioDisplayEnhancements[scenario.id] || createDefaultEnhancement(scenario);
+        Object.assign(scenario, enhancement);
+        scenario.displayTheme = getScenarioTheme(scenario.category);
+        scenario.tradeoffs = scenario.tradeoffs || ['Lifestyle value', 'Future flexibility', 'Complexity'];
+
+        const annualCosts = scenario.choices.map(choice => annualDisplayCost(choice));
+        const minAnnual = Math.min(...annualCosts);
+        const maxAnnual = Math.max(...annualCosts);
+        const costRange = maxAnnual - minAnnual || 1;
+
+        scenario.choices.forEach((choice, index) => {
+            const annualCost = annualCosts[index];
+            const savingsScore = Math.round(((maxAnnual - annualCost) / costRange) * 100);
+            const quality = choice.qualityScore || 70;
+            const simplicity = deriveSimplicityScore(choice);
+            choice.display = {
+                badge: deriveChoiceBadge(choice),
+                oneLine: choice.satisfactionNote || choice.detail,
+                meters: [
+                    { label: 'Enjoyment', value: Math.max(10, Math.min(100, quality)) },
+                    { label: 'Future flex', value: Math.max(5, Math.min(100, savingsScore)) },
+                    { label: 'Simplicity', value: simplicity }
+                ]
+            };
+        });
+    });
+}
+
+enhanceScenarioData();
+
 // Freeze to prevent modifications
 Object.freeze(ScenariosData);
 
