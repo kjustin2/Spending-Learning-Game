@@ -126,10 +126,10 @@ const Constants = {
 
     // UI Settings
     UI: {
-        ANIMATION_DURATION: 120,
-        CHART_ANIMATION_DURATION: 220,
-        COUNTER_DURATION: 350,
-        TRANSITION_DELAY: 40
+        ANIMATION_DURATION: 0,
+        CHART_ANIMATION_DURATION: 0,
+        COUNTER_DURATION: 0,
+        TRANSITION_DELAY: 0
     }
 };
 

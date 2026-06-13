@@ -187,7 +187,7 @@
 /* ===== Screen Transitions ===== */
 .screen {
     opacity: 0;
-    transition: opacity 0.12s ease;
+    transition: none;
 }
 
 .screen.active {
@@ -195,11 +195,11 @@
 }
 
 .screen.transitioning-out {
-    animation: fadeOut 0.12s ease forwards;
+    animation: none;
 }
 
 .screen.transitioning-in {
-    animation: fadeIn 0.12s ease forwards;
+    animation: none;
 }
 
 /* ===== Staggered Animations ===== */
@@ -237,7 +237,7 @@
 }
 
 .choice-btn.selected {
-    animation: pulse 0.16s ease;
+    animation: none;
 }
 
 /* ===== Chart Animations ===== */
@@ -247,7 +247,7 @@
 
 /* ===== Card Entrance ===== */
 .scenario-card {
-    animation: fadeInUp 0.18s ease;
+    animation: none;
 }
 
 .results-container > * {

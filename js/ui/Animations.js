@@ -158,14 +158,9 @@ const Animations = {
      * @returns {Promise} Resolves when transition completes
      */
     async transitionScreens(fromScreen, toScreen) {
-        const duration = Constants.UI.ANIMATION_DURATION;
-
         fromScreen.classList.remove('active', 'transitioning-out', 'transitioning-in');
-        toScreen.classList.add('active', 'transitioning-in');
-
-        setTimeout(() => {
-            toScreen.classList.remove('transitioning-in');
-        }, duration);
+        toScreen.classList.remove('transitioning-out', 'transitioning-in');
+        toScreen.classList.add('active');
     },
 
     /**

@@ -71,10 +71,7 @@ const Charts = {
                 }
             }
         },
-        animation: {
-            duration: Constants.UI.CHART_ANIMATION_DURATION,
-            easing: 'easeOutQuart'
-        }
+        animation: false
     },
 
     /**
@@ -460,10 +457,7 @@ const Charts = {
                         }
                     }
                 },
-                animation: {
-                    duration: Constants.UI.CHART_ANIMATION_DURATION,
-                    easing: 'easeOutQuart'
-                }
+                animation: false
             }
         });
     },

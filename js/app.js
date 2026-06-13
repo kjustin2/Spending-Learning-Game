@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.app = {
         game,
         ui,
-        version: '2.0.0'
+        version: '2.0.2-fast'
     };
     
     console.log('✅ Money Choices - Ready!');
