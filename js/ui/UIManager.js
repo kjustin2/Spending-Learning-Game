@@ -775,33 +775,26 @@ class UIManager {
             summary = this.game.getFinalSummary();
         }
         
-        // Update stats with animation
-        setTimeout(() => {
-            Animations.countUp(
-                this.elements.summaryTotalSavings,
-                summary.cumulativeImpact.byTimeframe[30]?.totalSavingsNominal || 0,
-                1500,
-                '$'
-            );
-        }, 200);
-        
-        setTimeout(() => {
-            Animations.countUp(
-                this.elements.summaryInvested,
-                summary.cumulativeImpact.byTimeframe[30]?.totalSavingsInvested || 0,
-                1500,
-                '$'
-            );
-        }, 400);
-        
-        setTimeout(() => {
-            Animations.countUp(
-                this.elements.summaryMonthly,
-                summary.monthlySavingsPotential,
-                1500,
-                '$'
-            );
-        }, 600);
+        Animations.countUp(
+            this.elements.summaryTotalSavings,
+            summary.cumulativeImpact.byTimeframe[30]?.totalSavingsNominal || 0,
+            Constants.UI.COUNTER_DURATION,
+            '$'
+        );
+
+        Animations.countUp(
+            this.elements.summaryInvested,
+            summary.cumulativeImpact.byTimeframe[30]?.totalSavingsInvested || 0,
+            Constants.UI.COUNTER_DURATION,
+            '$'
+        );
+
+        Animations.countUp(
+            this.elements.summaryMonthly,
+            summary.monthlySavingsPotential,
+            Constants.UI.COUNTER_DURATION,
+            '$'
+        );
         
         // Render decisions list
         this.renderDecisionsList(summary.decisions);
@@ -812,22 +805,18 @@ class UIManager {
         this.renderAchievementsGallery(summary.achievements || []);
         this.renderFinalTakeaways(summary.decisions);
         
-        // Create summary chart
-        setTimeout(() => {
-            Charts.createSummaryChart('summary-chart', summary.decisions);
-            Charts.createCategoryChart('category-chart', summary.decisions);
-        }, 800);
-        
-        // Update wisdom score
-        setTimeout(() => {
-            Animations.countUp(this.elements.wisdomScoreValue, summary.wisdomScore, 1500);
-        }, 1000);
+        Animations.countUp(this.elements.wisdomScoreValue, summary.wisdomScore, Constants.UI.COUNTER_DURATION);
         this.elements.wisdomMessage.textContent = summary.wisdomMessage;
         if (this.elements.continueGameBtn) {
             this.elements.continueGameBtn.style.display = this.game.state.isComplete ? 'none' : 'inline-flex';
         }
-        
-        this.showScreen('summary');
+
+        this.showScreen('summary').then(() => {
+            requestAnimationFrame(() => {
+                Charts.createSummaryChart('summary-chart', summary.decisions);
+                Charts.createCategoryChart('category-chart', summary.decisions);
+            });
+        });
     }
     
     /**
@@ -859,7 +848,10 @@ class UIManager {
             this.elements.decisionsList.appendChild(item);
         });
         
-        Animations.staggerIn(this.elements.decisionsList.querySelectorAll('.decision-item'));
+        this.elements.decisionsList.querySelectorAll('.decision-item').forEach(item => {
+            item.style.opacity = '1';
+            item.style.transform = 'none';
+        });
     }
     
     /**

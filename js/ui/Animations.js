@@ -82,7 +82,15 @@ const Animations = {
      * @param {string} suffix - Suffix string
      */
     countUp(element, endValue, duration = Constants.UI.COUNTER_DURATION, prefix = '', suffix = '') {
-        const startValue = 0;
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (prefersReducedMotion || duration <= 0) {
+            element.textContent = prefix + Helpers.formatNumber(endValue) + suffix;
+            return;
+        }
+
+        const currentText = element.textContent || '';
+        const parsedStart = Number(currentText.replace(/[^0-9.-]/g, ''));
+        const startValue = Number.isFinite(parsedStart) ? parsedStart : 0;
         const startTime = performance.now();
         
         function update(currentTime) {
@@ -130,13 +138,13 @@ const Animations = {
      * @param {NodeList|Array} elements - Elements to animate
      * @param {number} delay - Delay between each element in ms
      */
-    staggerIn(elements, delay = 50) {
+    staggerIn(elements, delay = 18) {
         elements.forEach((el, index) => {
             el.style.opacity = '0';
             el.style.transform = 'translateY(20px)';
             
             setTimeout(() => {
-                el.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                el.style.transition = 'opacity 0.14s ease, transform 0.14s ease';
                 el.style.opacity = '1';
                 el.style.transform = 'translateY(0)';
             }, index * delay);
@@ -150,19 +158,14 @@ const Animations = {
      * @returns {Promise} Resolves when transition completes
      */
     async transitionScreens(fromScreen, toScreen) {
-        // Fade out current screen
-        fromScreen.classList.add('transitioning-out');
-        
-        await new Promise(resolve => setTimeout(resolve, 300));
-        
-        fromScreen.classList.remove('active', 'transitioning-out');
-        
-        // Fade in new screen
+        const duration = Constants.UI.ANIMATION_DURATION;
+
+        fromScreen.classList.remove('active', 'transitioning-out', 'transitioning-in');
         toScreen.classList.add('active', 'transitioning-in');
-        
-        await new Promise(resolve => setTimeout(resolve, 300));
-        
-        toScreen.classList.remove('transitioning-in');
+
+        setTimeout(() => {
+            toScreen.classList.remove('transitioning-in');
+        }, duration);
     },
 
     /**
